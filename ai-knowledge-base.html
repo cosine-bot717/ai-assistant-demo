@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 智库管理 - 小鹅通</title>
+    <style>
+        :root {
+            --primary: #1890ff;
+            --primary-hover: #40a9ff;
+            --primary-active: #096dd9;
+            --primary-light: #e6f7ff;
+            --success: #52c41a;
+            --success-light: #f6ffed;
+            --processing: #1890ff;
+            --processing-light: #e6f7ff;
+            --warning: #faad14;
+            --error: #ff4d4f;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --border: #d9d9d9;
+            --border-light: #f0f0f0;
+            --text-1: #262626;
+            --text-2: #595959;
+            --text-3: #8c8c8c;
+            --text-4: #bfbfbf;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text-1);
+            line-height: 1.5715;
+        }
+
+        /* Header */
+        .header {
+            height: 56px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-3);
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--text-1);
+            background: #f5f5f5;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-1);
+            font-weight: 500;
+            cursor: default;
+        }
+
+        .breadcrumb-item.active:hover {
+            background: transparent;
+        }
+
+        .breadcrumb-sep {
+            color: var(--text-4);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            height: 32px;
+            padding: 0 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-default {
+            background: var(--card);
+            color: var(--text-1);
+            border: 1px solid var(--border);
+        }
+
+        .btn-default:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border: 1px solid var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Stats Dashboard */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .stat-icon.blue {
+            background: #e6f7ff;
+            color: var(--primary);
+        }
+
+        .stat-icon.green {
+            background: #f6ffed;
+            color: var(--success);
+        }
+
+        .stat-icon.orange {
+            background: #fff7e6;
+            color: var(--warning);
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-3);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-1);
+            line-height: 1.2;
+        }
+
+        .stat-unit {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-2);
+            margin-left: 4px;
+        }
+
+        .stat-progress {
+            margin-top: 8px;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .stat-progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .stat-hint {
+            font-size: 12px;
+            color: var(--text-3);
+            margin-top: 4px;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 20px;
+        }
+
+        .tab-item {
+            padding: 16px 16px;
+            font-size: 14px;
+            color: var(--text-2);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+        }
+
+        .tab-item:hover {
+            color: var(--primary);
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+            font-weight: 500;
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 6px;
+            background: #f0f0f0;
+            color: var(--text-2);
+            font-size: 12px;
+            border-radius: 9px;
+            margin-left: 6px;
+        }
+
+        .tab-item.active .tab-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Table */
+        .table-wrap {
+            padding: 0 20px 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            text-align: left;
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .table th {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-2);
+            background: #fafafa;
+        }
+
+        .table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .table td {
+            font-size: 14px;
+            color: var(--text-1);
+        }
+
+        .table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Table Elements */
+        .table-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-name-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .table-name-icon svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-2);
+        }
+
+        .table-name-text {
+            font-weight: 500;
+        }
+
+        .table-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: #f5f5f5;
+            color: var(--text-2);
+            font-size: 12px;
+            border-radius: 4px;
+        }
+
+        .table-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-dot.success {
+            background: var(--success);
+        }
+
+        .status-dot.processing {
+            background: var(--processing);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .status-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .loading-spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--border-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-link {
+            font-size: 13px;
+            color: var(--primary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .action-link:hover {
+            color: var(--primary-hover);
+        }
+
+        .action-link.danger {
+            color: var(--text-3);
+        }
+
+        .action-link.danger:hover {
+            color: var(--error);
+        }
+
+        /* Empty State */
+        .empty-tip {
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f0f5ff 0%, #e6f7ff 100%);
+            border: 1px solid #bae7ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .empty-tip-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .empty-tip-text {
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.6;
+        }
+
+        .empty-tip-text strong {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 520px;
+            background: var(--card);
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: var(--text-3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f5f5f5;
+            color: var(--text-1);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .import-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .import-option {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .import-option:hover {
+            border-color: var(--primary);
+            background: #fafafa;
+        }
+
+        .import-option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .import-option-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-2);
+        }
+
+        .import-option-content {
+            flex: 1;
+        }
+
+        .import-option-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-1);
+            margin-bottom: 2px;
+        }
+
+        .import-option-desc {
+            font-size: 12px;
+            color: var(--text-3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .table-wrap {
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 600px;
+            }
+
+            .modal {
+                width: calc(100% - 32px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="breadcrumb">
+            <span class="breadcrumb-item" onclick="goBack()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                AI 助理
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item active">AI 智库管理</span>
+        </nav>
+        <div class="header-actions">
+            <button class="btn btn-default" onclick="showCapacity()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                容量明细
+            </button>
+            <button class="btn btn-primary" onclick="showImportModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                导入新知识
+            </button>
+        </div>
+    </header>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Stats Dashboard -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">已学知识总量</div>
+                    <div class="stat-value">128<span class="stat-unit">份</span></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">本月消耗字数 / 配额</div>
+                    <div class="stat-value">45<span class="stat-unit">万</span></div>
+                    <div class="stat-progress">
+                        <div class="stat-progress-fill" style="width: 45%"></div>
+                    </div>
+                    <div class="stat-hint">配额 100 万字，剩余 55 万字</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">本周命中次数</div>
+                    <div class="stat-value">3,402<span class="stat-unit">次</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab-item active" data-tab="ecology" onclick="switchTab('ecology')">
+                    小鹅通生态数据
+                    <span class="tab-badge">2</span>
+                </div>
+                <div class="tab-item" data-tab="docs" onclick="switchTab('docs')">
+                    本地文档
+                    <span class="tab-badge">0</span>
+                </div>
+                <div class="tab-item" data-tab="faq" onclick="switchTab('faq')">
+                    自定义问答
+                    <span class="tab-badge">5</span>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap">
+                <table class="table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 35%">资料名称</th>
+                            <th style="width: 15%">数据类型</th>
+                            <th style="width: 18%">学习状态</th>
+                            <th style="width: 15%">更新时间</th>
+                            <th style="width: 17%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- 动态渲染 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty Tip -->
+        <div class="empty-tip">
+            <svg class="empty-tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <div class="empty-tip-text">
+                <strong>提示：</strong>AI 助理的聪明程度取决于您投喂的知识量。强烈建议您一键同步店铺内的核心课程与商品库。
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal-overlay" onclick="closeImportModal()"></div>
+    <div class="modal" id="importModal">
+        <div class="modal-header">
+            <span class="modal-title">导入新知识</span>
+            <button class="modal-close" onclick="closeImportModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="import-options">
+                <div class="import-option" onclick="importFrom('ecology')">
+                    <div class="import-option-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                    </div>
+                    <div class="import-option-content">
+                        <div class="import-option-title">同步小鹅通生态数据</div>
+                        <div class="import-option-desc">一键同步课程、专栏、商品等内容</div>
+                    </div>
+                </div>
+                <div class="import-option" onclick="importFrom('docs')">
+                    <div class="import-option-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="12" y1="18" x2="12" y2="12"/>
+                            <line x1="9" y1="15" x2="15" y2="15"/>
+                        </svg>
+                    </div>
+                    <div class="import-option-content">
+                        <div class="import-option-title">上传本地文档</div>
+                        <div class="import-option-desc">支持 PDF、Word、TXT 等格式</div>
+                    </div>
+                </div>
+                <div class="import-option" onclick="importFrom('faq')">
+                    <div class="import-option-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <div class="import-option-content">
+                        <div class="import-option-title">添加自定义问答</div>
+                        <div class="import-option-desc">手动录入 Q&A 问答对</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 返回配置页
+        function goBack() {
+            window.location.href = 'ai-assistant-config.html';
+        }
+
+        // Tab 数据
+        const tabData = {
+            ecology: [
+                {
+                    name: '《2026 私域操盘手训练营》全套逐字稿',
+                    type: '专栏课程',
+                    status: 'success',
+                    statusText: '学习完成',
+                    time: '2026-03-31'
+                },
+                {
+                    name: '双十一大促护肤品活动规则',
+                    type: '图文专栏',
+                    status: 'processing',
+                    statusText: '学习中',
+                    time: '2026-03-31'
+                }
+            ],
+            docs: [],
+            faq: [
+                {
+                    name: '产品常见问题解答',
+                    type: 'FAQ',
+                    status: 'success',
+                    statusText: '学习完成',
+                    time: '2026-03-30'
+                },
+                {
+                    name: '售后服务流程说明',
+                    type: 'FAQ',
+                    status: 'success',
+                    statusText: '学习完成',
+                    time: '2026-03-29'
+                },
+                {
+                    name: '会员权益规则',
+                    type: 'FAQ',
+                    status: 'success',
+                    statusText: '学习完成',
+                    time: '2026-03-28'
+                },
+                {
+                    name: '物流配送说明',
+                    type: 'FAQ',
+                    status: 'success',
+                    statusText: '学习完成',
+                    time: '2026-03-27'
+                },
+                {
+                    name: '退换货政策',
+                    type: 'FAQ',
+                    status: 'success',
+                    statusText: '学习完成',
+                    time: '2026-03-26'
+                }
+            ]
+        };
+
+        // 切换 Tab
+        function switchTab(tabKey) {
+            // 更新 Tab 状态
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabKey) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // 渲染表格
+            renderTable(tabKey);
+        }
+
+        // 渲染表格
+        function renderTable(tabKey) {
+            const data = tabData[tabKey];
+            const tbody = document.getElementById('tableBody');
+
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 48px 0; color: var(--text-3);">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin: 0 auto 12px; display: block; color: var(--text-4);">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                                <polyline points="13 2 13 9 20 9"/>
+                            </svg>
+                            暂无数据，点击上方"导入新知识"开始添加
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td>
+                        <div class="table-name">
+                            <div class="table-name-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            <span class="table-name-text">${item.name}</span>
+                        </div>
+                    </td>
+                    <td><span class="table-type">${item.type}</span></td>
+                    <td>
+                        <div class="table-status">
+                            <span class="status-dot ${item.status}"></span>
+                            ${item.status === 'processing' ? `
+                                <span class="status-loading">
+                                    <span class="loading-spinner"></span>
+                                    ${item.statusText}
+                                </span>
+                            ` : item.statusText}
+                        </div>
+                    </td>
+                    <td>${item.time}</td>
+                    <td>
+                        <div class="table-actions">
+                            <span class="action-link">${item.status === 'processing' ? '停止' : '重新同步'}</span>
+                            <span class="action-link danger">移除</span>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 显示容量明细
+        function showCapacity() {
+            alert('容量明细：\n\n已使用：45万字\n剩余配额：55万字\n配额有效期：2026-12-31');
+        }
+
+        // 显示导入弹窗
+        function showImportModal() {
+            document.querySelector('.modal-overlay').classList.add('active');
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        // 关闭导入弹窗
+        function closeImportModal() {
+            document.querySelector('.modal-overlay').classList.remove('active');
+            document.getElementById('importModal').classList.remove('active');
+        }
+
+        // 导入来源
+        function importFrom(source) {
+            closeImportModal();
+            const sourceNames = {
+                ecology: '小鹅通生态数据',
+                docs: '本地文档',
+                faq: '自定义问答'
+            };
+            alert(`即将跳转到「${sourceNames[source]}」导入页面...`);
+        }
+
+        // 初始化
+        renderTable('ecology');
+    </script>
+</body>
+</html>

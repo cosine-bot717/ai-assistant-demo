@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配置 AI 助播 - 小鹅通</title>
+    <style>
+        :root {
+            --primary: #1890ff;
+            --primary-hover: #40a9ff;
+            --primary-active: #096dd9;
+            --primary-light: #e6f7ff;
+            --primary-bg: #f0f5ff;
+            --success: #52c41a;
+            --success-light: #f6ffed;
+            --warning: #faad14;
+            --warning-light: #fffbe6;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --border: #d9d9d9;
+            --border-light: #f0f0f0;
+            --text-1: #262626;
+            --text-2: #595959;
+            --text-3: #8c8c8c;
+            --text-4: #bfbfbf;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text-1);
+            line-height: 1.5715;
+        }
+
+        /* Header */
+        .header {
+            height: 56px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-3);
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--text-1);
+            background: #f5f5f5;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-1);
+            font-weight: 500;
+            cursor: default;
+        }
+
+        .breadcrumb-item.active:hover {
+            background: transparent;
+        }
+
+        .breadcrumb-sep {
+            color: var(--text-4);
+        }
+
+        .btn-primary {
+            height: 36px;
+            padding: 0 20px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-primary:active {
+            background: var(--primary-active);
+        }
+
+        .btn-primary svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Main Layout */
+        .main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .config-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .preview-area {
+            width: 380px;
+            flex-shrink: 0;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header-link {
+            margin-left: auto;
+            font-size: 13px;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .card-header-link:hover {
+            color: var(--primary-hover);
+        }
+
+        .card-header-link svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .card-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-1);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-1);
+            margin-bottom: 8px;
+        }
+
+        .form-label-hint {
+            font-weight: 400;
+            color: var(--text-3);
+            font-size: 13px;
+            margin-left: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-1);
+            background: var(--card);
+            transition: all 0.2s;
+        }
+
+        .form-input:hover {
+            border-color: var(--primary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-4);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-1);
+            background: var(--card);
+            resize: vertical;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-textarea:hover {
+            border-color: var(--primary);
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .radio-item {
+            flex: 1;
+        }
+
+        .radio-item input {
+            display: none;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-label:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .radio-item input:checked + .radio-label {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--primary-light) 100%);
+            border: 1px solid #bae7ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-badge {
+            font-size: 12px;
+            padding: 2px 8px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 10px;
+        }
+
+        .progress-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #d9d9d9;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, #40a9ff 100%);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .progress-hint {
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.6;
+        }
+
+        .progress-hint strong {
+            color: var(--primary);
+        }
+
+        /* Multi Select */
+        .multi-select {
+            position: relative;
+        }
+
+        .select-trigger {
+            width: 100%;
+            min-height: 36px;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+            background: var(--card);
+        }
+
+        .select-trigger:hover {
+            border-color: var(--primary);
+        }
+
+        .multi-select.open .select-trigger {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        .select-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .select-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+            border-radius: 4px;
+        }
+
+        .select-tag-close {
+            cursor: pointer;
+            opacity: 0.6;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .select-tag-close:hover {
+            opacity: 1;
+        }
+
+        .select-placeholder {
+            color: var(--text-4);
+            font-size: 14px;
+        }
+
+        .select-arrow {
+            color: var(--text-3);
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .multi-select.open .select-arrow {
+            transform: rotate(180deg);
+        }
+
+        .select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: var(--shadow-lg);
+            z-index: 10;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .multi-select.open .select-dropdown {
+            display: block;
+        }
+
+        .select-option {
+            padding: 10px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .select-option:hover {
+            background: #f5f5f5;
+        }
+
+        .select-option.selected {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .option-check {
+            width: 16px;
+            height: 16px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .select-option.selected .option-check {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Upload */
+        .upload-area {
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #fafafa;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .upload-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 8px;
+            color: var(--text-3);
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-2);
+        }
+
+        .upload-link {
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-3);
+            margin-top: 4px;
+        }
+
+        .upload-list {
+            margin-top: 12px;
+        }
+
+        .upload-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #fafafa;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        .upload-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .upload-item-icon {
+            color: var(--primary);
+        }
+
+        .upload-item-name {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-1);
+        }
+
+        .upload-item-size {
+            font-size: 12px;
+            color: var(--text-3);
+        }
+
+        .upload-item-remove {
+            color: var(--text-3);
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .upload-item-remove:hover {
+            color: #ff4d4f;
+        }
+
+        /* Switch */
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .skill-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .skill-info {
+            flex: 1;
+            padding-right: 16px;
+        }
+
+        .skill-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-1);
+            margin-bottom: 4px;
+        }
+
+        .skill-desc {
+            font-size: 13px;
+            color: var(--text-3);
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .switch-slider {
+            position: absolute;
+            inset: 0;
+            background: #bfbfbf;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .switch-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 2px;
+            bottom: 2px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .switch input:checked + .switch-slider {
+            background: var(--primary);
+        }
+
+        .switch input:checked + .switch-slider::before {
+            transform: translateX(22px);
+        }
+
+        /* Preview Card */
+        .preview-card {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            position: sticky;
+            top: 76px;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .preview-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-1);
+        }
+
+        .preview-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--success);
+        }
+
+        .preview-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        /* Phone */
+        .phone-wrap {
+            padding: 20px;
+            background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-frame {
+            width: 260px;
+            background: #1a1a1a;
+            border-radius: 28px;
+            padding: 10px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background: #1a1a1a;
+            border-radius: 0 0 10px 10px;
+            z-index: 1;
+        }
+
+        .phone-screen {
+            background: var(--card);
+            border-radius: 20px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .phone-status {
+            padding: 6px 12px;
+            padding-top: 28px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-2);
+            background: #fafafa;
+        }
+
+        .live-bar {
+            padding: 8px 10px;
+            background: linear-gradient(135deg, #722ed1 0%, #9254de 100%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-avatar {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .live-avatar svg {
+            width: 12px;
+            height: 12px;
+            color: #fff;
+        }
+
+        .live-info {
+            flex: 1;
+        }
+
+        .live-name {
+            font-size: 11px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .live-viewers {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 6px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            font-size: 9px;
+            color: #fff;
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: #52c41a;
+            border-radius: 50%;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #fafafa;
+        }
+
+        .chat-msg {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-msg.user {
+            flex-direction: row-reverse;
+        }
+
+        .chat-avatar-sm {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .chat-msg.user .chat-avatar-sm {
+            background: #722ed1;
+            color: #fff;
+        }
+
+        .chat-msg.ai .chat-avatar-sm {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .chat-bubble-wrap {
+            max-width: 160px;
+        }
+
+        .chat-bubble {
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .chat-msg.user .chat-bubble {
+            background: var(--primary);
+            color: #fff;
+            border-radius: 8px 2px 8px 8px;
+        }
+
+        .chat-msg.ai .chat-bubble {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 2px 8px 8px 8px;
+        }
+
+        .chat-correct {
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .chat-correct-btn {
+            font-size: 10px;
+            color: var(--text-3);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .chat-correct-btn:hover {
+            color: var(--primary);
+        }
+
+        .chat-input-wrap {
+            padding: 8px;
+            background: var(--card);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 6px;
+        }
+
+        .chat-input-sm {
+            flex: 1;
+            height: 28px;
+            padding: 0 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            font-size: 11px;
+            outline: none;
+        }
+
+        .chat-input-sm:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-send-sm {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-tip {
+            padding: 12px 16px;
+            background: #fafafa;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .preview-tip-text {
+            font-size: 12px;
+            color: var(--text-3);
+            line-height: 1.5;
+        }
+
+        .preview-tip-text strong {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main {
+                flex-direction: column;
+            }
+
+            .preview-area {
+                width: 100%;
+            }
+
+            .preview-card {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .phone-frame {
+                width: 100%;
+                max-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="breadcrumb">
+            <span class="breadcrumb-item" onclick="goBack()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                AI 助理
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item" onclick="goBack()">预置模板选配</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item active">配置 AI 助播</span>
+        </nav>
+        <button class="btn-primary" onclick="save()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            保存并正式上岗
+        </button>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- 左侧配置区 -->
+        <div class="config-area">
+            <!-- 员工基本档案 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <span class="card-title">员工基本档案</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">助理昵称<span class="form-label-hint">将在直播间展示</span></label>
+                        <input type="text" class="form-input" id="name" value="专属直播场控" placeholder="请输入助理昵称">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">服务人设与语气<span class="form-label-hint">决定回复风格</span></label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="tone" value="lively" checked>
+                                <div class="radio-label">活泼热情</div>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tone" value="pro">
+                                <div class="radio-label">专业严谨</div>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tone" value="gentle">
+                                <div class="radio-label">亲切温和</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 岗前业务培训 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                        </svg>
+                    </div>
+                    <span class="card-title">岗前业务培训</span>
+                    <a class="card-header-link" onclick="goToKnowledgeBase()">
+                        前往智库中心精细化管理
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="7" y1="17" x2="17" y2="7"/>
+                            <polyline points="7 7 17 7 17 17"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <!-- 成长进度条 -->
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div class="progress-title">
+                                AI 业务能力评级
+                                <span class="progress-badge">入门</span>
+                            </div>
+                            <div class="progress-value">30%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 30%"></div>
+                        </div>
+                        <div class="progress-hint">
+                            关联<strong>商品库</strong>可提升至 50%，上传 <strong>FAQ</strong> 可提升至 90%
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">主推商品库</label>
+                        <div class="multi-select" id="productSelect">
+                            <div class="select-trigger" onclick="toggleSelect()">
+                                <div class="select-tags" id="selectedTags">
+                                    <span class="select-placeholder">请选择要在直播间推送的商品</span>
+                                </div>
+                                <span class="select-arrow">▼</span>
+                            </div>
+                            <div class="select-dropdown" id="dropdown">
+                                <div class="select-option" data-value="保湿面霜 50ml">保湿面霜 50ml</div>
+                                <div class="select-option" data-value="精华液 30ml">精华液 30ml</div>
+                                <div class="select-option" data-value="防晒喷雾 100ml">防晒喷雾 100ml</div>
+                                <div class="select-option" data-value="洁面乳 120g">洁面乳 120g</div>
+                                <div class="select-option" data-value="眼霜 15ml">眼霜 15ml</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">常见问答库 (FAQ)</label>
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <div class="upload-text">拖拽文件到此处，或 <span class="upload-link">点击上传</span></div>
+                            <div class="upload-hint">支持 PDF、Word、TXT 格式，单个文件不超过 10MB</div>
+                        </div>
+                        <input type="file" id="fileInput" style="display:none" accept=".pdf,.docx,.txt" multiple>
+                        <div class="upload-list" id="uploadList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 防翻车底线设定 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <span class="card-title">防翻车底线设定</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">绝对禁忌与兜底话术</label>
+                        <textarea class="form-textarea" id="forbidden" placeholder="请填写 AI 绝对不能提及的内容（如：禁止承诺退款、禁止推荐竞品）。遇到超纲问题将自动回复兜底话术。"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高阶技能装配 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <span class="card-title">高阶技能装配</span>
+                </div>
+                <div class="card-body">
+                    <div class="skill-list">
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <div class="skill-name">晚进房贴心总结</div>
+                                <div class="skill-desc">检测到新进入用户超过 3 分钟，自动私信直播进度</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <div class="skill-name">高意向弹幕拦截发券</div>
+                                <div class="skill-desc">识别"怎么买"、"有优惠吗"等关键词，自动弹出发券卡片</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧预览区 -->
+        <div class="preview-area">
+            <div class="preview-card">
+                <div class="preview-header">
+                    <span class="preview-title">直播间模拟器</span>
+                    <span class="preview-badge">实时调试</span>
+                </div>
+                <div class="phone-wrap">
+                    <div class="phone-frame">
+                        <div class="phone-screen">
+                            <div class="phone-status">
+                                <span>中国移动</span>
+                                <span>20:30</span>
+                            </div>
+                            <div class="live-bar">
+                                <div class="live-avatar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                    </svg>
+                                </div>
+                                <div class="live-info">
+                                    <div class="live-name">小鹅美妆直播间</div>
+                                    <div class="live-viewers">2.3万 在线</div>
+                                </div>
+                                <div class="live-badge">直播中</div>
+                            </div>
+                            <div class="chat-area" id="chatArea">
+                                <div class="chat-msg user">
+                                    <div class="chat-avatar-sm">客</div>
+                                    <div class="chat-bubble">这款面霜孕妇可以用吗？</div>
+                                </div>
+                                <div class="chat-msg ai">
+                                    <div class="chat-avatar-sm">AI</div>
+                                    <div class="chat-bubble-wrap">
+                                        <div class="chat-bubble">这款面霜纯植物提取，孕妇也能安心使用。现在下单送价值 50 元旅行装，马上为您上链接！</div>
+                                        <div class="chat-correct">
+                                            <span class="chat-correct-btn" onclick="correctAnswer()">回答不准？一键纠错并录入智库</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input-wrap">
+                                <input type="text" class="chat-input-sm" id="testInput" placeholder="输入测试消息..." onkeypress="handleEnter(event)">
+                                <button class="chat-send-sm" onclick="sendTest()">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="preview-tip">
+                    <div class="preview-tip-text"><strong>提示：</strong>修改左侧配置后，可在此处输入消息测试 AI 回复效果。点击"纠错"可将修正内容录入智库。</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 返回
+        function goBack() {
+            window.location.href = 'new-ai-assistant.html';
+        }
+
+        // 前往智库中心
+        function goToKnowledgeBase() {
+            window.location.href = 'ai-knowledge-base.html';
+        }
+
+        // 保存
+        function save() {
+            alert('配置已保存，助理即将上岗！');
+        }
+
+        // 商品选择
+        let selected = [];
+
+        function toggleSelect() {
+            document.getElementById('productSelect').classList.toggle('open');
+        }
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.multi-select')) {
+                document.getElementById('productSelect').classList.remove('open');
+            }
+        });
+
+        document.querySelectorAll('.select-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const val = opt.dataset.value;
+                if (selected.includes(val)) {
+                    selected = selected.filter(v => v !== val);
+                    opt.classList.remove('selected');
+                } else {
+                    selected.push(val);
+                    opt.classList.add('selected');
+                }
+                updateTags();
+                updateProgress();
+            });
+        });
+
+        function updateTags() {
+            const container = document.getElementById('selectedTags');
+            if (selected.length === 0) {
+                container.innerHTML = '<span class="select-placeholder">请选择要在直播间推送的商品</span>';
+            } else {
+                container.innerHTML = selected.map(v => `
+                    <span class="select-tag">${v} <span class="select-tag-close" onclick="removeTag('${v}')">×</span></span>
+                `).join('');
+            }
+        }
+
+        function removeTag(val) {
+            selected = selected.filter(v => v !== val);
+            document.querySelector(`.select-option[data-value="${val}"]`).classList.remove('selected');
+            updateTags();
+            updateProgress();
+        }
+
+        // 更新进度条
+        function updateProgress() {
+            const progressFill = document.querySelector('.progress-fill');
+            const progressValue = document.querySelector('.progress-value');
+            const progressBadge = document.querySelector('.progress-badge');
+            const progressHint = document.querySelector('.progress-hint');
+
+            let progress = 30;
+            let level = '入门';
+            let hint = '';
+
+            if (selected.length > 0) {
+                progress = 50;
+                level = '进阶';
+                hint = '已关联商品库。上传 <strong>FAQ</strong> 可提升至 90%';
+            }
+
+            if (document.querySelectorAll('.upload-item').length > 0) {
+                progress = 90;
+                level = '专家';
+                hint = '已关联商品库和 FAQ，AI 已具备完整业务能力';
+            }
+
+            if (selected.length > 0 && document.querySelectorAll('.upload-item').length > 0) {
+                progress = 90;
+            }
+
+            progressFill.style.width = progress + '%';
+            progressValue.textContent = progress + '%';
+            progressBadge.textContent = level;
+            progressHint.innerHTML = hint || '关联<strong>商品库</strong>可提升至 50%，上传 <strong>FAQ</strong> 可提升至 90%';
+        }
+
+        // 上传
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'upload-item';
+                item.innerHTML = `
+                    <span class="upload-item-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </span>
+                    <span class="upload-item-name">${file.name}</span>
+                    <span class="upload-item-size">${(file.size / 1024).toFixed(1)}KB</span>
+                    <span class="upload-item-remove" onclick="this.parentElement.remove();updateProgress();">×</span>
+                `;
+                document.getElementById('uploadList').appendChild(item);
+            });
+            updateProgress();
+        }
+
+        // 测试对话
+        function sendTest() {
+            const input = document.getElementById('testInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chatArea = document.getElementById('chatArea');
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-msg user';
+            userMsg.innerHTML = `<div class="chat-avatar-sm">客</div><div class="chat-bubble">${msg}</div>`;
+            chatArea.appendChild(userMsg);
+
+            input.value = '';
+
+            setTimeout(() => {
+                const replies = [
+                    '好的，我来为您详细解答这个问题。',
+                    '感谢您的咨询，让我为您查询一下。',
+                    '收到！马上为您处理，请稍等。'
+                ];
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'chat-msg ai';
+                aiMsg.innerHTML = `
+                    <div class="chat-avatar-sm">AI</div>
+                    <div class="chat-bubble-wrap">
+                        <div class="chat-bubble">${replies[Math.floor(Math.random() * replies.length)]}</div>
+                        <div class="chat-correct">
+                            <span class="chat-correct-btn" onclick="correctAnswer()">回答不准？一键纠错并录入智库</span>
+                        </div>
+                    </div>
+                `;
+                chatArea.appendChild(aiMsg);
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 500);
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendTest();
+        }
+
+        // 纠错
+        function correctAnswer() {
+            alert('已打开纠错面板，您可以对 AI 回复进行修正并录入智库，实现闭环学习。');
+        }
+    </script>
+</body>
+</html>
