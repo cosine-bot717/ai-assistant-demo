@@ -1275,7 +1275,7 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="form-label">助理昵称<span class="form-label-hint">将在直播间展示</span></label>
+                        <label class="form-label">助理昵称<span class="form-label-hint" id="nicknameHint">将在直播间展示</span></label>
                         <input type="text" class="form-input" id="name" value="专属直播场控" placeholder="请输入助理昵称">
                     </div>
                     <div class="form-group">
@@ -1339,7 +1339,7 @@
                         <div class="multi-select" id="productSelect">
                             <div class="select-trigger" onclick="toggleSelect()">
                                 <div class="select-tags" id="selectedTags">
-                                    <span class="select-placeholder">请选择要在直播间推送的商品</span>
+                                    <span class="select-placeholder" id="selectPlaceholder">请选择要在直播间推送的商品</span>
                                 </div>
                                 <span class="select-arrow">▼</span>
                             </div>
@@ -1431,7 +1431,7 @@
         <div class="preview-area">
             <div class="preview-card">
                 <div class="preview-header">
-                    <span class="preview-title">直播间模拟器</span>
+                    <span class="preview-title" id="previewTitle">直播间模拟器</span>
                     <span class="preview-badge">实时调试</span>
                 </div>
                 <div class="phone-wrap">
@@ -1452,7 +1452,7 @@
                                     <div class="live-name" id="liveName">小鹅美妆直播间</div>
                                     <div class="live-viewers">2.3万 在线</div>
                                 </div>
-                                <div class="live-badge">直播中</div>
+                                <div class="live-badge" id="liveBadge">直播中</div>
                             </div>
                             <div class="chat-area" id="chatArea">
                                 <div class="chat-msg user">
@@ -1599,7 +1599,8 @@
         function updateTags() {
             const container = document.getElementById('selectedTags');
             if (selected.length === 0) {
-                container.innerHTML = '<span class="select-placeholder">请选择要在直播间推送的商品</span>';
+                const placeholder = currentConfig ? currentConfig.selectPlaceholder : '请选择要在直播间推送的商品';
+                container.innerHTML = `<span class="select-placeholder">${placeholder}</span>`;
             } else {
                 container.innerHTML = selected.map(v => `
                     <span class="select-tag">${v} <span class="select-tag-close" onclick="removeTag('${v}')">×</span></span>
@@ -1844,36 +1845,48 @@
             sales: {
                 title: '配置 AI 导购',
                 nickname: '金牌营销客服',
+                nicknameHint: '将在店铺客服会话中展示',
                 productLabel: '关联店铺商品库',
+                selectPlaceholder: '请选择要重点推荐的店铺商品',
                 skills: [
                     { name: '智能购物车催付', desc: '检测购物车停留超过 5 分钟，自动发送催付提醒' },
                     { name: '主动挽回流失客', desc: '识别未下单就离开的用户，自动发送优惠券召回' }
                 ],
+                previewTitle: '客服接待模拟器',
                 liveName: '店铺客服私信',
+                liveBadge: '客服在线',
                 userQuestion: '这件衣服有 M 码吗？',
                 aiAnswer: '亲，M 码有现货的哦！我看您是我们的老客户了，现在下单给您包邮并赠送运费险，需要马上为您打包吗？'
             },
             tutor: {
                 title: '配置 AI 助教',
                 nickname: '专属伴学私教',
+                nicknameHint: '将在圈子和班级群内展示',
                 productLabel: '关联课程/专栏',
+                selectPlaceholder: '请选择需要辅导的课程或专栏',
                 skills: [
                     { name: '课后作业自动催交', desc: '检测学员作业进度，到期前自动发送催交通知' },
                     { name: '学习进度周报生成', desc: '每周自动汇总学员学习数据，生成个性化报告' }
                 ],
+                previewTitle: '伴学答疑模拟器',
                 liveName: '班级群 / 私聊答疑',
+                liveBadge: '老师在线',
                 userQuestion: '老师，第三章的内容我没听懂',
                 aiAnswer: '王同学您好！您的第三章进度为 45%。结合您的错题，我已为您匹配【第三章重点解析】视频，现在为您推送？'
             },
             broadcaster: {
                 title: '配置 AI 助播',
                 nickname: '专属直播场控',
+                nicknameHint: '将在直播间展示',
                 productLabel: '直播主推商品库',
+                selectPlaceholder: '请选择要在直播间推送的商品',
                 skills: [
                     { name: '晚进房贴心总结', desc: '检测到新进入用户超过 3 分钟，自动私信直播进度' },
                     { name: '高意向弹幕拦截发券', desc: '识别"怎么买"、"有优惠吗"等关键词，自动弹出发券卡片' }
                 ],
+                previewTitle: '直播间模拟器',
                 liveName: '小鹅美妆官方直播间',
+                liveBadge: '直播中',
                 userQuestion: '这款面霜孕妇可以用吗？',
                 aiAnswer: '亲亲！这款面霜纯植物提取，孕妇妈妈也能安心使用哦~ 现在下单还送价值 50 元的旅行装，马上为您上链接！'
             }
@@ -1903,26 +1916,39 @@
         }
 
         // 初始化页面
+        // 当前角色配置（全局变量，供其他函数使用）
+        let currentConfig = null;
+
         function initPage() {
             const role = getRoleFromURL();
-            const config = roleConfigs[role] || roleConfigs.broadcaster;
+            currentConfig = roleConfigs[role] || roleConfigs.broadcaster;
 
             // 更新面包屑
-            document.getElementById('breadcrumbActive').textContent = config.title;
+            document.getElementById('breadcrumbActive').textContent = currentConfig.title;
 
             // 更新助理昵称
-            document.getElementById('name').value = config.nickname;
+            document.getElementById('name').value = currentConfig.nickname;
+
+            // 更新昵称提示
+            document.getElementById('nicknameHint').textContent = currentConfig.nicknameHint;
 
             // 更新商品库标签
-            document.getElementById('productLibraryLabel').textContent = config.productLabel;
+            document.getElementById('productLibraryLabel').textContent = currentConfig.productLabel;
+
+            // 更新下拉框占位符
+            document.getElementById('selectPlaceholder').textContent = currentConfig.selectPlaceholder;
 
             // 更新技能列表
-            renderSkills(config.skills);
+            renderSkills(currentConfig.skills);
 
-            // 更新模拟器
-            document.getElementById('liveName').textContent = config.liveName;
-            document.getElementById('userQuestion').textContent = config.userQuestion;
-            document.getElementById('aiAnswer').textContent = config.aiAnswer;
+            // 更新模拟器标题
+            document.getElementById('previewTitle').textContent = currentConfig.previewTitle;
+
+            // 更新模拟器内容
+            document.getElementById('liveName').textContent = currentConfig.liveName;
+            document.getElementById('liveBadge').textContent = currentConfig.liveBadge;
+            document.getElementById('userQuestion').textContent = currentConfig.userQuestion;
+            document.getElementById('aiAnswer').textContent = currentConfig.aiAnswer;
         }
 
         // 页面加载完成后执行
