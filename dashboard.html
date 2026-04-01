@@ -278,13 +278,10 @@
         }
 
         /* Employee List */
-        .employee-section {
-            display: flex;
-            gap: 24px;
-        }
-
         .employee-list {
-            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .employee-item {
@@ -295,12 +292,7 @@
             background: #fafafa;
             border: 1px solid var(--border-light);
             border-radius: 8px;
-            margin-bottom: 12px;
             transition: all 0.2s;
-        }
-
-        .employee-item:last-child {
-            margin-bottom: 0;
         }
 
         .employee-item:hover {
@@ -357,26 +349,21 @@
             color: var(--text-3);
         }
 
-        .employee-action {
-            margin-top: 20px;
+        /* Small Button */
+        .btn-sm {
+            height: 28px;
+            padding: 0 12px;
+            font-size: 13px;
         }
 
-        .btn-lg {
-            height: 40px;
-            padding: 0 24px;
-            font-size: 14px;
-            font-weight: 500;
+        .btn-sm svg {
+            width: 12px;
+            height: 12px;
         }
 
         /* Brain Section */
-        .brain-section {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
         .brain-status {
-            flex: 1;
+            width: 100%;
         }
 
         .brain-progress {
@@ -429,30 +416,19 @@
             color: var(--success);
         }
 
-        .brain-action {
-            flex-shrink: 0;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
             }
 
-            .employee-section {
-                flex-direction: column;
-            }
-
-            .brain-section {
+            .section-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 12px;
             }
 
-            .brain-action {
-                width: 100%;
-            }
-
-            .brain-action .btn {
+            .section-header .btn-sm {
                 width: 100%;
                 justify-content: center;
             }
@@ -569,43 +545,39 @@
                     </svg>
                     AI 数字员工管理
                 </span>
+                <button class="btn btn-primary btn-sm" onclick="goToMarket()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    前往招聘市场
+                </button>
             </div>
             <div class="section-body">
-                <div class="employee-section">
-                    <div class="employee-list">
-                        <div class="employee-item">
-                            <div class="employee-status active"></div>
-                            <div class="employee-info">
-                                <div class="employee-name">金牌导购</div>
-                                <div class="employee-role">店铺客服 · 已服役 15 天</div>
-                            </div>
-                            <span class="employee-badge active">运行中</span>
+                <div class="employee-list">
+                    <div class="employee-item">
+                        <div class="employee-status active"></div>
+                        <div class="employee-info">
+                            <div class="employee-name">金牌导购</div>
+                            <div class="employee-role">店铺客服 · 已服役 15 天</div>
                         </div>
-                        <div class="employee-item">
-                            <div class="employee-status active"></div>
-                            <div class="employee-info">
-                                <div class="employee-name">专属助教</div>
-                                <div class="employee-role">班级群答疑 · 已服役 8 天</div>
-                            </div>
-                            <span class="employee-badge active">运行中</span>
-                        </div>
-                        <div class="employee-item">
-                            <div class="employee-status inactive"></div>
-                            <div class="employee-info">
-                                <div class="employee-name">直播场控</div>
-                                <div class="employee-role">直播间 · 未配置</div>
-                            </div>
-                            <span class="employee-badge inactive">未激活</span>
-                        </div>
+                        <span class="employee-badge active">运行中</span>
                     </div>
-                    <div class="employee-action">
-                        <button class="btn btn-primary btn-lg" onclick="goToMarket()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                            前往招聘市场 (新增员工)
-                        </button>
+                    <div class="employee-item">
+                        <div class="employee-status active"></div>
+                        <div class="employee-info">
+                            <div class="employee-name">专属助教</div>
+                            <div class="employee-role">班级群答疑 · 已服役 8 天</div>
+                        </div>
+                        <span class="employee-badge active">运行中</span>
+                    </div>
+                    <div class="employee-item">
+                        <div class="employee-status inactive"></div>
+                        <div class="employee-info">
+                            <div class="employee-name">直播场控</div>
+                            <div class="employee-role">直播间 · 未配置</div>
+                        </div>
+                        <span class="employee-badge inactive">未激活</span>
                     </div>
                 </div>
             </div>
@@ -622,35 +594,31 @@
                     </svg>
                     企业业务大脑 (全局智库)
                 </span>
+                <button class="btn btn-default btn-sm" onclick="goToKnowledgeBase()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    管理数据
+                </button>
             </div>
             <div class="section-body">
-                <div class="brain-section">
-                    <div class="brain-status">
-                        <div class="brain-progress">
-                            <div class="brain-progress-header">
-                                <span class="brain-progress-label">数据健康度</span>
-                                <span class="brain-progress-value">128 份 / 优秀</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 85%"></div>
-                            </div>
+                <div class="brain-status">
+                    <div class="brain-progress">
+                        <div class="brain-progress-header">
+                            <span class="brain-progress-label">数据健康度</span>
+                            <span class="brain-progress-value">128 份 / 优秀</span>
                         </div>
-                        <div class="brain-status-text">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                <polyline points="22 4 12 14.01 9 11.01"/>
-                            </svg>
-                            已同步 128 份小鹅通生态数据，SCRM 热数据实时互通中
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
                         </div>
                     </div>
-                    <div class="brain-action">
-                        <button class="btn btn-default btn-lg" onclick="goToKnowledgeBase()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                            </svg>
-                            管理与同步业务数据
-                        </button>
+                    <div class="brain-status-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        已同步 128 份小鹅通生态数据，SCRM 热数据实时互通中
                     </div>
                 </div>
             </div>
