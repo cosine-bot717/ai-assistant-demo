@@ -664,7 +664,10 @@
             }
         };
 
+        let currentRoleKey = 'live'; // 默认为助播
+
         function openDrawer(key) {
+            currentRoleKey = key; // 记录当前打开的角色
             const role = roles[key];
 
             // 更新抽屉头部
@@ -711,10 +714,19 @@
             document.querySelector('.drawer').classList.remove('active');
         }
 
+        // 角色到 URL 参数的映射
+        const roleParams = {
+            shopping: 'sales',
+            edu: 'tutor',
+            live: 'broadcaster',
+            custom: 'custom'
+        };
+
         function hire() {
+            const roleParam = roleParams[currentRoleKey] || 'broadcaster';
             closeDrawer();
             setTimeout(() => {
-                window.location.href = 'ai-assistant-config.html';
+                window.location.href = `ai-assistant-config.html?role=${roleParam}`;
             }, 300);
         }
 

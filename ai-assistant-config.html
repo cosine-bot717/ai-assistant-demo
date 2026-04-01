@@ -988,7 +988,7 @@
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item" onclick="goBack()">预置模板选配</span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item active">配置 AI 助播</span>
+            <span class="breadcrumb-item active" id="breadcrumbActive">配置 AI 助播</span>
         </nav>
         <button class="btn-primary" onclick="save()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1077,7 +1077,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">主推商品库</label>
+                        <label class="form-label" id="productLibraryLabel">主推商品库</label>
                         <div class="multi-select" id="productSelect">
                             <div class="select-trigger" onclick="toggleSelect()">
                                 <div class="select-tags" id="selectedTags">
@@ -1143,7 +1143,7 @@
                     <span class="card-title">高阶技能装配</span>
                 </div>
                 <div class="card-body">
-                    <div class="skill-list">
+                    <div class="skill-list" id="skillList">
                         <div class="skill-item">
                             <div class="skill-info">
                                 <div class="skill-name">晚进房贴心总结</div>
@@ -1191,7 +1191,7 @@
                                     </svg>
                                 </div>
                                 <div class="live-info">
-                                    <div class="live-name">小鹅美妆直播间</div>
+                                    <div class="live-name" id="liveName">小鹅美妆直播间</div>
                                     <div class="live-viewers">2.3万 在线</div>
                                 </div>
                                 <div class="live-badge">直播中</div>
@@ -1199,12 +1199,12 @@
                             <div class="chat-area" id="chatArea">
                                 <div class="chat-msg user">
                                     <div class="chat-avatar-sm">客</div>
-                                    <div class="chat-bubble">这款面霜孕妇可以用吗？</div>
+                                    <div class="chat-bubble" id="userQuestion">这款面霜孕妇可以用吗？</div>
                                 </div>
                                 <div class="chat-msg ai">
                                     <div class="chat-avatar-sm">AI</div>
                                     <div class="chat-bubble-wrap">
-                                        <div class="chat-bubble">这款面霜纯植物提取，孕妇也能安心使用。现在下单送价值 50 元旅行装，马上为您上链接！</div>
+                                        <div class="chat-bubble" id="aiAnswer">这款面霜纯植物提取，孕妇也能安心使用。现在下单送价值 50 元旅行装，马上为您上链接！</div>
                                         <div class="chat-correct">
                                             <span class="chat-correct-btn" onclick="correctAnswer()">回答不准？一键纠错并录入智库</span>
                                         </div>
@@ -1404,6 +1404,95 @@
         function correctAnswer() {
             alert('已打开纠错面板，您可以对 AI 回复进行修正并录入智库，实现闭环学习。');
         }
+
+        // ========== 动态渲染：根据 URL 参数 role 切换场景 ==========
+        const roleConfigs = {
+            sales: {
+                title: '配置 AI 导购',
+                nickname: '金牌营销客服',
+                productLabel: '关联店铺商品库',
+                skills: [
+                    { name: '智能购物车催付', desc: '检测购物车停留超过 5 分钟，自动发送催付提醒' },
+                    { name: '主动挽回流失客', desc: '识别未下单就离开的用户，自动发送优惠券召回' }
+                ],
+                liveName: '店铺客服私信',
+                userQuestion: '这件衣服有 M 码吗？',
+                aiAnswer: '亲，M 码有现货的哦！我看您是我们的老客户了，现在下单给您包邮并赠送运费险，需要马上为您打包吗？'
+            },
+            tutor: {
+                title: '配置 AI 助教',
+                nickname: '专属伴学私教',
+                productLabel: '关联课程/专栏',
+                skills: [
+                    { name: '课后作业自动催交', desc: '检测学员作业进度，到期前自动发送催交通知' },
+                    { name: '学习进度周报生成', desc: '每周自动汇总学员学习数据，生成个性化报告' }
+                ],
+                liveName: '班级群 / 私聊答疑',
+                userQuestion: '老师，第三章的内容我没听懂',
+                aiAnswer: '王同学您好！您的第三章进度为 45%。结合您的错题，我已为您匹配【第三章重点解析】视频，现在为您推送？'
+            },
+            broadcaster: {
+                title: '配置 AI 助播',
+                nickname: '专属直播场控',
+                productLabel: '直播主推商品库',
+                skills: [
+                    { name: '晚进房贴心总结', desc: '检测到新进入用户超过 3 分钟，自动私信直播进度' },
+                    { name: '高意向弹幕拦截发券', desc: '识别"怎么买"、"有优惠吗"等关键词，自动弹出发券卡片' }
+                ],
+                liveName: '小鹅美妆官方直播间',
+                userQuestion: '这款面霜孕妇可以用吗？',
+                aiAnswer: '亲亲！这款面霜纯植物提取，孕妇妈妈也能安心使用哦~ 现在下单还送价值 50 元的旅行装，马上为您上链接！'
+            }
+        };
+
+        // 解析 URL 参数
+        function getRoleFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('role') || 'broadcaster';
+        }
+
+        // 渲染技能列表
+        function renderSkills(skills) {
+            const skillList = document.getElementById('skillList');
+            skillList.innerHTML = skills.map(skill => `
+                <div class="skill-item">
+                    <div class="skill-info">
+                        <div class="skill-name">${skill.name}</div>
+                        <div class="skill-desc">${skill.desc}</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        // 初始化页面
+        function initPage() {
+            const role = getRoleFromURL();
+            const config = roleConfigs[role] || roleConfigs.broadcaster;
+
+            // 更新面包屑
+            document.getElementById('breadcrumbActive').textContent = config.title;
+
+            // 更新助理昵称
+            document.getElementById('name').value = config.nickname;
+
+            // 更新商品库标签
+            document.getElementById('productLibraryLabel').textContent = config.productLabel;
+
+            // 更新技能列表
+            renderSkills(config.skills);
+
+            // 更新模拟器
+            document.getElementById('liveName').textContent = config.liveName;
+            document.getElementById('userQuestion').textContent = config.userQuestion;
+            document.getElementById('aiAnswer').textContent = config.aiAnswer;
+        }
+
+        // 页面加载完成后执行
+        initPage();
     </script>
 </body>
 </html>
