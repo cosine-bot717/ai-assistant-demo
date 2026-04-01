@@ -627,6 +627,219 @@
             color: var(--text-3);
         }
 
+        /* Memory Status */
+        .memory-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f6ffed 0%, #e6f7ff 100%);
+            border: 1px solid #b7eb8f;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .memory-status-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .memory-status-icon svg {
+            width: 18px;
+            height: 18px;
+            color: #fff;
+        }
+
+        .memory-status-content {
+            flex: 1;
+        }
+
+        .memory-status-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 2px;
+        }
+
+        .memory-status-desc {
+            font-size: 12px;
+            color: var(--text-2);
+        }
+
+        .memory-status-badge {
+            padding: 4px 10px;
+            background: var(--success);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 12px;
+        }
+
+        /* Skill Enhancements */
+        .skill-icon {
+            background: linear-gradient(135deg, #fff7e6 0%, #ffe7ba 100%);
+            color: #fa8c16;
+        }
+
+        .skill-intro {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #fafafa;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-2);
+        }
+
+        .skill-intro svg {
+            width: 16px;
+            height: 16px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .skill-name-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            color: var(--primary);
+            vertical-align: middle;
+        }
+
+        /* Trigger Icon */
+        .trigger-icon {
+            background: linear-gradient(135deg, #f0f5ff 0%, #d6e4ff 100%);
+            color: #2f54eb;
+        }
+
+        /* Card Enhancements */
+        .card-subtitle {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-3);
+            margin-left: 4px;
+        }
+
+        .card-badge {
+            margin-left: auto;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #bae7ff 100%);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 12px;
+        }
+
+        /* Rule Builder */
+        .rule-builder {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .rule-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .rule-row:last-of-type {
+            margin-bottom: 16px;
+        }
+
+        .rule-label {
+            font-size: 13px;
+            color: var(--text-2);
+            flex-shrink: 0;
+        }
+
+        .rule-select {
+            flex: 1;
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-1);
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rule-select:hover {
+            border-color: var(--primary);
+        }
+
+        .rule-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        .rule-row-action {
+            flex-wrap: wrap;
+        }
+
+        .rule-input {
+            flex: 1;
+            min-width: 200px;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-1);
+            transition: all 0.2s;
+        }
+
+        .rule-input:hover {
+            border-color: var(--primary);
+        }
+
+        .rule-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+
+        .rule-actions {
+            padding-top: 4px;
+        }
+
+        .rule-btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rule-btn-add svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .rule-btn-add:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
         .switch {
             position: relative;
             width: 44px;
@@ -1298,7 +1511,7 @@
                 </div>
             </div>
 
-            <!-- 岗前业务培训 -->
+            <!-- 知识与记忆关联 -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-icon">
@@ -1307,7 +1520,7 @@
                             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                         </svg>
                     </div>
-                    <span class="card-title">岗前业务培训</span>
+                    <span class="card-title">知识与记忆关联</span>
                     <a class="card-header-link" onclick="goToKnowledgeBase()">
                         前往智库中心精细化管理
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1317,11 +1530,26 @@
                     </a>
                 </div>
                 <div class="card-body">
+                    <!-- 深度记忆打通状态 -->
+                    <div class="memory-status">
+                        <div class="memory-status-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <div class="memory-status-content">
+                            <div class="memory-status-title">深度记忆打通</div>
+                            <div class="memory-status-desc">已实时接入小鹅通 SCRM 全局用户画像（VIP等级、历史订单、行为轨迹）</div>
+                        </div>
+                        <div class="memory-status-badge">已启用</div>
+                    </div>
+
                     <!-- 成长进度条 -->
                     <div class="progress-section">
                         <div class="progress-header">
                             <div class="progress-title">
-                                AI 业务能力评级
+                                Agent 业务能力评级
                                 <span class="progress-badge">入门</span>
                             </div>
                             <div class="progress-value">30%</div>
@@ -1330,16 +1558,16 @@
                             <div class="progress-fill" style="width: 30%"></div>
                         </div>
                         <div class="progress-hint">
-                            关联<strong>商品库</strong>可提升至 50%，上传 <strong>FAQ</strong> 可提升至 90%
+                            关联<strong>智库</strong>可提升至 50%，装配<strong>业务技能</strong>可提升至 90%
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" id="productLibraryLabel">主推商品库</label>
+                        <label class="form-label" id="productLibraryLabel">关联智库</label>
                         <div class="multi-select" id="productSelect">
                             <div class="select-trigger" onclick="toggleSelect()">
                                 <div class="select-tags" id="selectedTags">
-                                    <span class="select-placeholder" id="selectPlaceholder">请选择要在直播间推送的商品</span>
+                                    <span class="select-placeholder" id="selectPlaceholder">请选择要关联的知识库或商品库</span>
                                 </div>
                                 <span class="select-arrow">▼</span>
                             </div>
@@ -1352,75 +1580,127 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label">常见问答库 (FAQ)</label>
-                        <div class="upload-area" id="uploadArea">
-                            <div class="upload-icon">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="17 8 12 3 7 8"/>
-                                    <line x1="12" y1="3" x2="12" y2="15"/>
-                                </svg>
-                            </div>
-                            <div class="upload-text">拖拽文件到此处，或 <span class="upload-link">点击上传</span></div>
-                            <div class="upload-hint">支持 PDF、Word、TXT 格式，单个文件不超过 10MB</div>
-                        </div>
-                        <input type="file" id="fileInput" style="display:none" accept=".pdf,.docx,.txt" multiple>
-                        <div class="upload-list" id="uploadList"></div>
-                    </div>
                 </div>
             </div>
 
-            <!-- 防翻车底线设定 -->
+            <!-- 业务技能装配 (Skill Hub) -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-icon">
+                    <div class="card-icon skill-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
                         </svg>
                     </div>
-                    <span class="card-title">防翻车底线设定</span>
+                    <span class="card-title">业务技能装配 <span class="card-subtitle">(Skill Hub)</span></span>
                 </div>
                 <div class="card-body">
-                    <div class="form-group">
-                        <label class="form-label">绝对禁忌与兜底话术</label>
-                        <textarea class="form-textarea" id="forbidden" placeholder="请填写 AI 绝对不能提及的内容（如：禁止承诺退款、禁止推荐竞品）。遇到超纲问题将自动回复兜底话术。"></textarea>
+                    <div class="skill-intro">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="16" x2="12" y2="12"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8"/>
+                        </svg>
+                        赋予 Agent 实际操作系统数据的能力，使其能真正代替人工执行业务。
+                    </div>
+                    <div class="skill-list" id="skillList">
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <div class="skill-name">
+                                    <svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                                        <line x1="7" y1="7" x2="7.01" y2="7"/>
+                                    </svg>
+                                    智能发券挽单
+                                </div>
+                                <div class="skill-desc">允许 Agent 判断用户购买意愿下降时，主动调用底层发券接口</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <div class="skill-name">
+                                    <svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="12" y1="18" x2="12" y2="12"/>
+                                        <line x1="9" y1="15" x2="15" y2="15"/>
+                                    </svg>
+                                    订单信息修改
+                                </div>
+                                <div class="skill-desc">允许 Agent 在对话中直接帮用户修改收货地址等订单信息</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <div class="skill-name">
+                                    <svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="9" cy="21" r="1"/>
+                                        <circle cx="20" cy="21" r="1"/>
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                                    </svg>
+                                    购物车主动催付
+                                </div>
+                                <div class="skill-desc">识别到待支付订单时，Agent 可生成支付卡片并主动催单</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 高阶技能装配 -->
+            <!-- 主动出击规则 -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-icon">
+                    <div class="card-icon trigger-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                         </svg>
                     </div>
-                    <span class="card-title">高阶技能装配</span>
+                    <span class="card-title">主动出击规则</span>
+                    <span class="card-badge">Agent 自主决策</span>
                 </div>
                 <div class="card-body">
-                    <div class="skill-list" id="skillList">
-                        <div class="skill-item">
-                            <div class="skill-info">
-                                <div class="skill-name">晚进房贴心总结</div>
-                                <div class="skill-desc">检测到新进入用户超过 3 分钟，自动私信直播进度</div>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="switch-slider"></span>
-                            </label>
+                    <div class="rule-builder">
+                        <div class="rule-row">
+                            <span class="rule-label">当</span>
+                            <select class="rule-select">
+                                <option>用户停留页面超过 3 分钟</option>
+                                <option>用户反复查看同一商品</option>
+                                <option>用户发起咨询但未下单</option>
+                                <option>新用户首次进入店铺</option>
+                            </select>
                         </div>
-                        <div class="skill-item">
-                            <div class="skill-info">
-                                <div class="skill-name">高意向弹幕拦截发券</div>
-                                <div class="skill-desc">识别"怎么买"、"有优惠吗"等关键词，自动弹出发券卡片</div>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="switch-slider"></span>
-                            </label>
+                        <div class="rule-row">
+                            <span class="rule-label">且</span>
+                            <select class="rule-select">
+                                <option>购物车有商品未结算</option>
+                                <option>用户等级为 VIP</option>
+                                <option>用户有历史订单</option>
+                                <option>用户未领取新人券</option>
+                            </select>
+                        </div>
+                        <div class="rule-row rule-row-action">
+                            <span class="rule-label">时，Agent 主动发送</span>
+                            <input type="text" class="rule-input" placeholder="您好，看到您有喜欢的商品，需要我为您申请专属折扣吗？" value="您好，看到您有喜欢的商品，需要我为您申请专属折扣吗？">
+                        </div>
+                        <div class="rule-actions">
+                            <button class="rule-btn-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                添加更多规则
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1849,8 +2129,9 @@
                 productLabel: '关联店铺商品库',
                 selectPlaceholder: '请选择要重点推荐的店铺商品',
                 skills: [
-                    { name: '智能购物车催付', desc: '检测购物车停留超过 5 分钟，自动发送催付提醒' },
-                    { name: '主动挽回流失客', desc: '识别未下单就离开的用户，自动发送优惠券召回' }
+                    { name: '智能发券挽单', desc: '允许 Agent 判断用户购买意愿下降时，主动调用底层发券接口', icon: 'coupon', checked: true },
+                    { name: '订单信息修改', desc: '允许 Agent 在对话中直接帮用户修改收货地址等订单信息', icon: 'order', checked: false },
+                    { name: '购物车主动催付', desc: '识别到待支付订单时，Agent 可生成支付卡片并催单', icon: 'cart', checked: true }
                 ],
                 previewTitle: '客服接待模拟器',
                 liveName: '店铺客服私信',
@@ -1865,8 +2146,9 @@
                 productLabel: '关联课程/专栏',
                 selectPlaceholder: '请选择需要辅导的课程或专栏',
                 skills: [
-                    { name: '课后作业自动催交', desc: '检测学员作业进度，到期前自动发送催交通知' },
-                    { name: '学习进度周报生成', desc: '每周自动汇总学员学习数据，生成个性化报告' }
+                    { name: '学习进度实时追踪', desc: '允许 Agent 查询学员学习进度并生成个性化学习建议', icon: 'progress', checked: true },
+                    { name: '作业批改与反馈', desc: 'Agent 可自动批改作业并给出详细的改进建议', icon: 'homework', checked: true },
+                    { name: '课程内容智能推荐', desc: '根据学员薄弱点主动推送相关学习资源', icon: 'recommend', checked: false }
                 ],
                 previewTitle: '伴学答疑模拟器',
                 liveName: '班级群 / 私聊答疑',
@@ -1881,15 +2163,46 @@
                 productLabel: '直播主推商品库',
                 selectPlaceholder: '请选择要在直播间推送的商品',
                 skills: [
-                    { name: '晚进房贴心总结', desc: '检测到新进入用户超过 3 分钟，自动私信直播进度' },
-                    { name: '高意向弹幕拦截发券', desc: '识别"怎么买"、"有优惠吗"等关键词，自动弹出发券卡片' }
+                    { name: '智能发券挽单', desc: '允许 Agent 判断用户购买意愿下降时，主动调用底层发券接口', icon: 'coupon', checked: true },
+                    { name: '订单信息修改', desc: '允许 Agent 在对话中直接帮用户修改收货地址等订单信息', icon: 'order', checked: false },
+                    { name: '购物车主动催付', desc: '识别到待支付订单时，Agent 可生成支付卡片并催单', icon: 'cart', checked: true }
                 ],
                 previewTitle: '直播间模拟器',
                 liveName: '小鹅美妆官方直播间',
                 liveBadge: '直播中',
                 userQuestion: '这款面霜孕妇可以用吗？',
                 aiAnswer: '亲亲！这款面霜纯植物提取，孕妇妈妈也能安心使用哦~ 现在下单还送价值 50 元的旅行装，马上为您上链接！'
+            },
+            custom: {
+                title: '配置自定义助理',
+                nickname: '全能专属助理',
+                nicknameHint: '将在您指定的各渠道中展示',
+                productLabel: '关联业务数据源',
+                selectPlaceholder: '请选择要关联的全局知识库或商品库',
+                skills: [
+                    { name: '全渠道智能意图路由', desc: '自动识别用户意图并分发至对应业务模块，实现跨场景响应', icon: 'router', checked: true },
+                    { name: '外部 API 动作调用', desc: '对接第三方系统接口，扩展助理的外部数据获取与动作执行能力', icon: 'api', checked: true },
+                    { name: '自定义业务流触发', desc: '支持配置复杂业务逻辑，Agent 可按规则执行多步骤操作', icon: 'flow', checked: false }
+                ],
+                previewTitle: '全能助手模拟测试',
+                liveName: '跨渠道调试环境',
+                liveBadge: '调试中',
+                userQuestion: '你好，请自我介绍一下并展示你的核心能力。',
+                aiAnswer: '您好！我是您的专属定制助理。我已准备好接入您的各项业务数据，支持全渠道多场景响应与复杂意图识别。现在，您可以随时对我进行配置与联调！'
             }
+        };
+
+        // 技能图标映射
+        const skillIcons = {
+            coupon: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+            order: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
+            cart: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+            progress: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
+            homework: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+            recommend: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+            router: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            api: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+            flow: '<svg class="skill-name-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'
         };
 
         // 解析 URL 参数
@@ -1904,11 +2217,11 @@
             skillList.innerHTML = skills.map(skill => `
                 <div class="skill-item">
                     <div class="skill-info">
-                        <div class="skill-name">${skill.name}</div>
+                        <div class="skill-name">${skillIcons[skill.icon] || ''}${skill.name}</div>
                         <div class="skill-desc">${skill.desc}</div>
                     </div>
                     <label class="switch">
-                        <input type="checkbox" checked>
+                        <input type="checkbox" ${skill.checked ? 'checked' : ''}>
                         <span class="switch-slider"></span>
                     </label>
                 </div>
