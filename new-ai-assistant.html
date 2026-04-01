@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新建 AI 助理 - 小鹅通</title>
+    <title>AI 数字员工招聘市场 - 小鹅通</title>
     <style>
         :root {
             --primary: #1890ff;
@@ -35,6 +35,25 @@
             max-width: 1000px;
             margin: 0 auto;
             padding: 48px 24px;
+        }
+
+        /* Back Link */
+        .back-link {
+            margin-bottom: 24px;
+        }
+
+        .back-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link a:hover {
+            color: var(--primary);
         }
 
         /* Header */
@@ -525,9 +544,17 @@
 </head>
 <body>
     <div class="container">
+        <div class="back-link">
+            <a href="dashboard.html">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                返回工作台
+            </a>
+        </div>
         <div class="page-header">
-            <h1 class="page-title">新建 AI 助理</h1>
-            <p class="page-subtitle">挑选您的专属数字员工</p>
+            <h1 class="page-title">AI 数字员工招聘市场</h1>
+            <p class="page-subtitle">挑选您的专属数字员工，赋能业务自动化运营</p>
         </div>
 
         <div class="card-grid">

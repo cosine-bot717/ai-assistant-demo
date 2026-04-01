@@ -1454,10 +1454,10 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 12H5M12 19l-7-7 7-7"/>
                 </svg>
-                AI 助理
+                工作台
             </span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item" onclick="goBack()">预置模板选配</span>
+            <span class="breadcrumb-item" onclick="goToMarket()">招聘市场</span>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item active" id="breadcrumbActive">配置 AI 助播</span>
         </nav>
@@ -1833,8 +1833,13 @@
     </div>
 
     <script>
-        // 返回
+        // 返回工作台
         function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+
+        // 前往招聘市场
+        function goToMarket() {
             window.location.href = 'new-ai-assistant.html';
         }
 
