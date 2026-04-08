@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>AI 经营中枢</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#F5F6FA;min-width:1280px;font-size:13px;}
+
+/* ── Top nav ── */
+.topnav{background:#fff;border-bottom:1px solid #eee;padding:0 24px;height:48px;display:flex;align-items:center;position:sticky;top:0;z-index:100;}
+.nav-logo{font-size:12px;font-weight:700;color:#1677FF;background:#E8F4FF;padding:3px 10px;border-radius:4px;margin-right:20px;cursor:pointer;}
+.nav-item{font-size:13px;color:#555;padding:0 13px;height:48px;display:flex;align-items:center;cursor:pointer;transition:color .15s;}
+.nav-item:hover{color:#1677FF;}
+.nav-item.active{color:#1677FF;border-bottom:2px solid #1677FF;font-weight:600;}
+.nav-right{margin-left:auto;font-size:12px;color:#1677FF;cursor:pointer;}
+
+/* ── Layout ── */
+.layout{display:flex;min-height:calc(100vh - 48px);}
+
+/* ── Left nav ── */
+.leftnav{width:130px;background:#fff;border-right:1px solid #f0f0f0;padding:14px 0;flex-shrink:0;position:sticky;top:48px;height:calc(100vh - 48px);overflow-y:auto;}
+.ln{padding:9px 16px;font-size:13px;color:#555;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
+.ln:hover{color:#1677FF;background:#F8FBFF;}
+.ln.active{color:#1677FF;background:#F0F5FF;font-weight:500;}
+.ln-dot{width:5px;height:5px;border-radius:50%;background:#ccc;flex-shrink:0;transition:background .15s;}
+.ln.active .ln-dot{background:#1677FF;}
+.ln-sub{padding:6px 16px 6px 30px;font-size:11px;color:#bbb;cursor:pointer;}
+.ln-sub:hover{color:#1677FF;}
+
+/* ── Main ── */
+.main{flex:1;padding:14px 20px;display:flex;flex-direction:column;gap:10px;}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(115deg,#EEF4FF,#E8EFFF);border-radius:10px;padding:18px 26px;display:flex;align-items:center;height:130px;flex-shrink:0;}
+.hero-left{flex:1;}
+.hero-title{font-size:22px;font-weight:700;color:#111;margin-bottom:6px;}
+.hero-desc{font-size:12px;color:#555;line-height:1.75;}
+.hero-link{font-size:11px;color:#1677FF;margin-top:4px;display:block;cursor:pointer;}
+.hero-right{width:270px;flex-shrink:0;position:relative;height:94px;}
+.mc{background:#fff;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.09);padding:8px 10px;position:absolute;}
+.mc-main{width:168px;top:0;right:36px;}
+.mc-head{font-size:11px;font-weight:600;color:#1677FF;display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.mc-chip{width:18px;height:18px;background:#1677FF;border-radius:3px;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.mc-bubble{background:#1677FF;color:#fff;border-radius:5px;padding:4px 8px;font-size:10px;line-height:1.4;margin-bottom:3px;}
+.mc-reply{background:#f5f5f5;border-radius:5px;padding:4px 8px;font-size:10px;color:#555;line-height:1.4;}
+.mc-stat{top:6px;right:0;padding:8px 10px;width:82px;}
+.mc-srow{font-size:10px;color:#333;display:flex;justify-content:space-between;margin-bottom:4px;}
+.up{color:#52C41A;}
+.hero-badge{position:absolute;bottom:2px;right:120px;background:#fff;border-radius:16px;padding:3px 10px;font-size:10px;color:#555;box-shadow:0 1px 6px rgba(0,0,0,0.1);}
+
+/* ── KPI strip ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex-shrink:0;}
+.kpi-card{background:#fff;border-radius:10px;padding:14px 18px;border:1px solid #F0F0F0;display:flex;align-items:center;gap:14px;transition:box-shadow .15s;}
+.kpi-card:hover{box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.kpi-icon-w{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ki-b{background:#E6F4FF;} .ki-g{background:#F6FFED;} .ki-o{background:#FFF7E6;}
+.kpi-lbl{font-size:11px;color:#999;margin-bottom:4px;}
+.kpi-val{font-size:24px;font-weight:700;color:#111;line-height:1;}
+.kpi-val em{font-size:12px;color:#bbb;font-weight:400;font-style:normal;margin-left:2px;}
+.kpi-trend{font-size:11px;color:#52C41A;margin-top:3px;}
+.kpi-trend span{color:#bbb;}
+
+/* ── Tabs container ── */
+.tabs-wrap{background:#fff;border-radius:10px;flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.tabs-head{display:flex;align-items:center;border-bottom:1px solid #ebebeb;padding:0 18px;flex-shrink:0;}
+.tab-btn{padding:11px 20px;font-size:13px;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none;}
+.tab-btn:hover{color:#1677FF;}
+.tab-btn.active{color:#1677FF;border-bottom-color:#1677FF;font-weight:500;}
+.tab-actions{margin-left:auto;display:flex;align-items:center;gap:8px;padding:6px 0;}
+.search-inp{border:1px solid #ebebeb;border-radius:16px;padding:5px 12px 5px 28px;font-size:12px;color:#555;width:140px;outline:none;background:#FAFAFA url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 10px center;}
+.hire-btn{background:#1677FF;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;cursor:pointer;font-weight:500;transition:background .15s;}
+.hire-btn:hover{background:#0958d9;}
+
+/* ── Tab panels ── */
+.tab-panel{display:none;flex:1;overflow:hidden;}
+.tab-panel.active{display:flex;flex:1;overflow:hidden;}
+
+/* ── 招聘广场 panel ── */
+.market-layout{display:flex;width:100%;overflow:hidden;}
+.market-sidebar{width:180px;flex-shrink:0;border-right:1px solid #f5f5f5;padding:14px 0;overflow-y:auto;}
+.mcat-section{margin-bottom:4px;}
+.mcat-title{font-size:11px;color:#bbb;padding:0 14px 6px;letter-spacing:.03em;font-weight:500;}
+.mcat-item{padding:8px 14px;font-size:13px;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .15s;}
+.mcat-item:hover{background:#F8F8F8;color:#1677FF;}
+.mcat-item.active{color:#1677FF;background:#F0F5FF;border-right:2px solid #1677FF;font-weight:500;}
+.mcat-count{font-size:11px;color:#bbb;}
+.mcat-item.active .mcat-count{color:#ADC6FF;}
+.mcat-divider{height:1px;background:#f5f5f5;margin:6px 14px;}
+
+.market-content{flex:1;overflow-y:auto;padding:16px 20px;}
+.mkt-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.mkt-title{font-size:14px;font-weight:600;color:#111;}
+.mkt-title span{font-size:13px;color:#bbb;font-weight:400;margin-left:6px;}
+.sort-btns{display:flex;border:1px solid #E8E8E8;border-radius:6px;overflow:hidden;}
+.sort-btn{padding:5px 14px;font-size:12px;color:#666;cursor:pointer;background:#fff;transition:all .15s;}
+.sort-btn:hover{background:#F5F5F5;}
+.sort-btn.active{background:#1677FF;color:#fff;}
+
+.industry-pills{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.pill{padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #e8e8e8;color:#555;background:#fff;transition:all .15s;user-select:none;}
+.pill:hover{border-color:#1677FF;color:#1677FF;}
+.pill.active{background:#1677FF;color:#fff;border-color:#1677FF;}
+
+/* Agent list item */
+.agent-item{background:#fff;border:1px solid #F0F0F0;border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;cursor:pointer;transition:all .15s;position:relative;}
+.agent-item:hover{border-color:#BAD3FF;box-shadow:0 2px 10px rgba(22,119,255,0.07);}
+.agent-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.agent-body{flex:1;min-width:0;}
+.agent-name-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.agent-name{font-size:15px;font-weight:600;color:#111;}
+.agent-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;}
+.badge-hot{background:#FFF7E6;color:#FA8C16;border:1px solid #FFD591;}
+.badge-rec{background:#FFF1F0;color:#FF4D4F;border:1px solid #FFA39E;}
+.agent-tags{display:flex;gap:6px;margin-bottom:8px;}
+.atag{font-size:11px;padding:2px 8px;border-radius:3px;}
+.at-edu{background:#F6FFED;color:#52C41A;border:1px solid #B7EB8F;}
+.at-ecom{background:#F0F5FF;color:#1677FF;border:1px solid #ADC6FF;}
+.at-live{background:#F9F0FF;color:#722ED1;border:1px solid #D3ADF7;}
+.at-med{background:#FFF7E6;color:#FA8C16;border:1px solid #FFD591;}
+.at-gen{background:#F5F5F5;color:#666;border:1px solid #E0E0E0;}
+.agent-desc{font-size:12px;color:#888;line-height:1.6;margin-bottom:8px;}
+.agent-usage{font-size:11px;color:#bbb;}
+.agent-action{flex-shrink:0;display:flex;align-items:center;align-self:center;}
+.btn-hire{background:#1677FF;color:#fff;border:none;border-radius:6px;padding:7px 18px;font-size:12px;cursor:pointer;font-weight:500;white-space:nowrap;transition:background .15s;}
+.btn-hire:hover{background:#0958d9;}
+
+/* ── 我的分身 panel ── */
+.emp-content{flex:1;overflow-y:auto;padding:14px 18px;}
+.sum-bar{display:flex;gap:18px;margin-bottom:14px;align-items:center;}
+.sum-chip{font-size:12px;color:#555;}
+.sum-chip b{font-size:14px;font-weight:700;color:#111;margin-right:3px;}
+.sum-chip.warn b{color:#FA8C16;}
+.divdr{width:1px;height:12px;background:#eee;}
+
+.emp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.ecard{background:#fff;border:1px solid #EBEBEB;border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative;}
+.ecard:hover{border-color:#BAD3FF;box-shadow:0 3px 12px rgba(22,119,255,0.07);}
+.ecard.warn{border-color:#FFD591;}
+.ecard.inactive{border:1px dashed #d9d9d9;opacity:0.65;}
+.sp{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:3px;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;}
+.sp-g{background:#F6FFED;color:#52C41A;}
+.sp-o{background:#FFF7E6;color:#FA8C16;}
+.sp-gray{background:#F5F5F5;color:#999;}
+.sp-dot{width:5px;height:5px;border-radius:50%;}
+.spd-g{background:#52C41A;} .spd-o{background:#FA8C16;} .spd-gray{background:#bbb;}
+.card-top{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.ava{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.av-or{background:linear-gradient(135deg,#f0c880,#f8d898);}
+.av-gr{background:linear-gradient(135deg,#a8e0b8,#c0f0cc);}
+.av-bl{background:linear-gradient(135deg,#a8c8f0,#c0dcf8);}
+.av-pu{background:linear-gradient(135deg,#c8a8e8,#d8bef8);}
+.av-gy{background:#ebebeb;}
+.card-meta{flex:1;min-width:0;}
+.card-name{font-size:13px;font-weight:600;color:#111;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-sub{font-size:10px;color:#bbb;display:flex;align-items:center;gap:3px;}
+.rt{font-size:10px;padding:1px 5px;border-radius:3px;}
+.rt-med{background:#FFF7E6;color:#FA8C16;border:1px solid #FFD591;}
+.rt-edu{background:#F6FFED;color:#52C41A;border:1px solid #B7EB8F;}
+.rt-live{background:#F9F0FF;color:#722ED1;border:1px solid #D3ADF7;}
+.rt-gen{background:#F0F5FF;color:#1677FF;border:1px solid #ADC6FF;}
+.deploy-row{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;}
+.dtag{font-size:10px;padding:1px 7px;border-radius:3px;background:#F0F5FF;color:#1677FF;border:1px solid #D6E8FF;}
+.score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.score-lbl{font-size:10px;color:#bbb;}
+.score-val{font-size:12px;font-weight:600;}
+.sv-g{color:#52C41A;} .sv-o{color:#FA8C16;} .sv-gray{color:#d0d0d0;}
+.bar-bg{height:4px;background:#F5F5F5;border-radius:4px;overflow:hidden;margin-bottom:9px;}
+.bar-fill{height:4px;border-radius:4px;}
+.bf-g{background:linear-gradient(90deg,#73D13D,#52C41A);}
+.bf-o{background:linear-gradient(90deg,#FFA940,#FA8C16);}
+.warn-tip{display:flex;align-items:center;gap:5px;color:#FA8C16;font-size:10px;margin-bottom:8px;}
+.wd{width:4px;height:4px;border-radius:50%;background:#FA8C16;flex-shrink:0;}
+.stats{display:flex;border-top:1px solid #F5F5F5;padding-top:8px;margin-bottom:9px;}
+.s-col{flex:1;text-align:center;}
+.s-col:not(:last-child){border-right:1px solid #F5F5F5;}
+.s-n{font-size:14px;font-weight:700;color:#111;}
+.s-n.warn{color:#FA8C16;} .s-n.gray{color:#ccc;}
+.s-l{font-size:10px;color:#bbb;margin-top:1px;}
+.acts{display:flex;gap:6px;}
+.btn{flex:1;padding:5px 0;font-size:11px;border-radius:6px;cursor:pointer;text-align:center;border:1px solid;transition:all .15s;}
+.btn-set{color:#666;border-color:#E0E0E0;background:#fff;}
+.btn-set:hover{border-color:#1677FF;color:#1677FF;}
+.btn-add{color:#1677FF;border-color:#ADC6FF;background:#F0F5FF;}
+.btn-add:hover{background:#1677FF;color:#fff;}
+.btn-train{color:#FA8C16;border-color:#FFD591;background:#FFF7E6;}
+.btn-train:hover{background:#FA8C16;color:#fff;}
+.btn-cfg{color:#999;border-color:#E0E0E0;background:#fafafa;flex:1;}
+.ecard-new{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;background:#FAFCFF;border:1.5px dashed #ADC6FF;min-height:220px;}
+.ecard-new:hover{background:#F0F5FF;border-color:#1677FF;}
+.np{font-size:26px;color:#ADC6FF;line-height:1;}
+.nt{font-size:12px;color:#1677FF;font-weight:500;}
+.ns{font-size:11px;color:#bbb;}
+
+/* ── 知识库 panel ── */
+.kb-content{flex:1;overflow-y:auto;padding:16px 20px;}
+.kb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.kb-stats{display:flex;gap:10px;margin-bottom:16px;}
+.kb-stat{background:#F7F9FF;border-radius:8px;padding:10px 16px;flex:1;}
+.kb-stat-num{font-size:20px;font-weight:700;color:#111;}
+.kb-stat-lbl{font-size:11px;color:#bbb;margin-top:2px;}
+.kb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.kb-card{background:#fff;border:1px solid #EBEBEB;border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;position:relative;}
+.kb-card:hover{border-color:#BAD3FF;box-shadow:0 2px 8px rgba(22,119,255,0.07);}
+.kb-icon{width:36px;height:36px;border-radius:8px;background:#E6F4FF;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px;}
+.kb-name{font-size:13px;font-weight:600;color:#111;margin-bottom:3px;}
+.kb-desc{font-size:11px;color:#bbb;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.kb-meta{display:flex;justify-content:space-between;align-items:center;}
+.kb-count{font-size:11px;color:#999;}
+.kb-badge{font-size:10px;padding:1px 8px;border-radius:10px;}
+.kb-new{background:#F0F5FF;color:#1677FF;}
+.kb-old{background:#F5F5F5;color:#999;}
+.kb-add{border:1.5px dashed #ADC6FF;background:#FAFCFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:130px;}
+.kb-add:hover{background:#F0F5FF;border-color:#1677FF;}
+.kb-add .np{font-size:22px;color:#ADC6FF;}
+.kb-add .nt{font-size:12px;color:#1677FF;font-weight:500;}
+.btn-add-kb{background:#1677FF;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;cursor:pointer;font-weight:500;}
+.btn-add-kb:hover{background:#0958d9;}
+</style>
+</head>
+<body>
+
+<!-- Top nav -->
+<div class="topnav">
+  <div class="nav-logo">SCRM专用</div>
+  <div class="nav-item">工作台</div>
+  <div class="nav-item">课程</div>
+  <div class="nav-item">直播</div>
+  <div class="nav-item">商城</div>
+  <div class="nav-item">SCRM</div>
+  <div class="nav-item">交易</div>
+  <div class="nav-item">用户</div>
+  <div class="nav-item">数据</div>
+  <div class="nav-item">设置</div>
+  <div class="nav-item active">AI 经营中枢</div>
+  <div class="nav-right">有问题，找AI管家</div>
+</div>
+
+<div class="layout">
+  <!-- Left nav -->
+  <div class="leftnav">
+    <div class="ln"><div class="ln-dot"></div>AI概况</div>
+    <div class="ln active"><div class="ln-dot"></div>AI分身</div>
+    <div class="ln"><div class="ln-dot"></div>AI销售</div>
+    <div class="ln"><div class="ln-dot"></div>AI营销</div>
+    <div class="ln"><div class="ln-dot"></div>AI智识</div>
+    <div class="ln-sub">AI速览</div>
+    <div class="ln-sub">AI出题</div>
+    <div class="ln"><div class="ln-dot"></div>AI创作</div>
+    <div class="ln-sub">文案创作</div>
+    <div class="ln-sub">AI文本润色</div>
+    <div class="ln-sub">图片创作</div>
+    <div class="ln"><div class="ln-dot"></div>AI账户</div>
+    <div class="ln"><div class="ln-dot"></div>应用专区</div>
+    <div class="ln-sub">内容工具</div>
+    <div class="ln-sub">经营渠道</div>
+    <div class="ln-sub">营销玩法</div>
+    <div class="ln-sub">用户运营</div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-title">AI 分身</div>
+        <div class="hero-desc">基于AI大模型，AI分身学习企业、课程等知识后，化身为懂业务的<br>智慧分身——督学助教、导播大咖、客服专员……为您创造经营价值！</div>
+        <a class="hero-link">《小鹅通AI算法及模型备案信息说明》</a>
+      </div>
+      <div class="hero-right">
+        <div class="mc mc-main">
+          <div class="mc-head"><div class="mc-chip">AI</div>AI 分身</div>
+          <div class="mc-bubble">帮我复习课程核心知识点～</div>
+          <div class="mc-reply">根据课程内容，核心知识点一共有三个步骤……</div>
+        </div>
+        <div class="mc mc-stat">
+          <div class="mc-srow">服务效率 <span class="up">↑</span></div>
+          <div class="mc-srow">经营价值 <span class="up">↑</span></div>
+        </div>
+        <div class="hero-badge">🤖 客服 · 督学 · 导播</div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-icon-w ki-b">👥</div>
+        <div>
+          <div class="kpi-lbl">本周累计接待人次</div>
+          <div class="kpi-val">4,425<em>次</em></div>
+          <div class="kpi-trend">↑ +12.5% <span>较上周</span></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-w ki-g">💰</div>
+        <div>
+          <div class="kpi-lbl">主动挽单 / 发券 GMV</div>
+          <div class="kpi-val">¥12,500<em>元</em></div>
+          <div class="kpi-trend">↑ +8.3% <span>较上周</span></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon-w ki-o">🛡️</div>
+        <div>
+          <div class="kpi-lbl">客诉拦截率</div>
+          <div class="kpi-val">87<em>%</em></div>
+          <div class="kpi-trend">↑ +3.2% <span>较上周</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs + panels -->
+    <div class="tabs-wrap">
+      <div class="tabs-head">
+        <div class="tab-btn" id="tab-market" onclick="switchTab('market')">招聘广场</div>
+        <div class="tab-btn active" id="tab-emp" onclick="switchTab('emp')">我的分身</div>
+        <div class="tab-btn" id="tab-kb" onclick="switchTab('kb')">知识库</div>
+        <div class="tab-actions">
+          <input class="search-inp" placeholder="搜索岗位 / 技能" id="search-inp">
+          <button class="hire-btn" onclick="switchTab('market')">+ 招募新分身</button>
+        </div>
+      </div>
+
+      <!-- 招聘广场 -->
+      <div class="tab-panel" id="panel-market">
+        <div class="market-layout">
+          <div class="market-sidebar">
+            <div class="mcat-section">
+              <div class="mcat-title">全部行业</div>
+              <div class="mcat-item active" onclick="filterIndustry('全部',this)">全部 <span class="mcat-count">32</span></div>
+              <div class="mcat-item" onclick="filterIndustry('教培',this)">教培 <span class="mcat-count">11</span></div>
+              <div class="mcat-item" onclick="filterIndustry('电商',this)">电商 <span class="mcat-count">8</span></div>
+              <div class="mcat-item" onclick="filterIndustry('直播',this)">直播 <span class="mcat-count">6</span></div>
+              <div class="mcat-item" onclick="filterIndustry('医美',this)">医美 <span class="mcat-count">4</span></div>
+              <div class="mcat-item" onclick="filterIndustry('通用',this)">通用 <span class="mcat-count">3</span></div>
+            </div>
+            <div class="mcat-divider"></div>
+            <div class="mcat-section" style="padding-top:10px;">
+              <div class="mcat-title">岗位类型</div>
+              <div class="mcat-item" onclick="filterJob('督学岗',this)">督学岗 <span class="mcat-count">8</span></div>
+              <div class="mcat-item" onclick="filterJob('客服岗',this)">客服岗 <span class="mcat-count">9</span></div>
+              <div class="mcat-item" onclick="filterJob('导播岗',this)">导播岗 <span class="mcat-count">6</span></div>
+              <div class="mcat-item" onclick="filterJob('问诊岗',this)">问诊岗 <span class="mcat-count">4</span></div>
+              <div class="mcat-item" onclick="filterJob('点评岗',this)">点评岗 <span class="mcat-count">5</span></div>
+            </div>
+          </div>
+
+          <div class="market-content">
+            <div class="mkt-header">
+              <div class="mkt-title">全部 AI 分身 <span>共 32 位</span></div>
+              <div class="sort-btns">
+                <div class="sort-btn active" onclick="setSort(this)">最热</div>
+                <div class="sort-btn" onclick="setSort(this)">最新</div>
+              </div>
+            </div>
+            <div class="industry-pills">
+              <div class="pill active" onclick="setPill(this)">全部</div>
+              <div class="pill" onclick="setPill(this)">教培</div>
+              <div class="pill" onclick="setPill(this)">电商</div>
+              <div class="pill" onclick="setPill(this)">直播</div>
+              <div class="pill" onclick="setPill(this)">医美</div>
+              <div class="pill" onclick="setPill(this)">通用</div>
+            </div>
+            <div id="agent-list">
+              <div class="agent-item" data-industry="教培" data-job="点评岗">
+                <div class="agent-avatar av-gr">📝</div>
+                <div class="agent-body">
+                  <div class="agent-name-row">
+                    <span class="agent-name">作文批改专家</span>
+                    <span class="agent-badge badge-rec">推荐</span>
+                  </div>
+                  <div class="agent-tags"><span class="atag at-edu">教培 · 点评岗</span></div>
+                  <div class="agent-desc">我是语文作文批改专家，专注中小学阶段多维度剖析学生写作。从语言表达、结构逻辑、情感主题全方位给出改进建议，帮助学生快速提升写作水平。</div>
+                  <div class="agent-usage">已有 5,480 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="教培" data-job="督学岗">
+                <div class="agent-avatar av-gr">📚</div>
+                <div class="agent-body">
+                  <div class="agent-name-row">
+                    <span class="agent-name">AI 学习督导员</span>
+                    <span class="agent-badge badge-hot">热门</span>
+                  </div>
+                  <div class="agent-tags"><span class="atag at-edu">教培 · 督学岗</span></div>
+                  <div class="agent-desc">持续追踪学员学习进度，智能识别学习停滞、作业未提交等行为，主动发送个性化督促消息，帮助机构提升课程完课率。</div>
+                  <div class="agent-usage">已有 3,210 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="教培" data-job="点评岗">
+                <div class="agent-avatar" style="background:linear-gradient(135deg,#a8e0c0,#c0f0d0)">🎯</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">考公考培点评官</span></div>
+                  <div class="agent-tags"><span class="atag at-edu">教培 · 点评岗</span></div>
+                  <div class="agent-desc">专注考公考培场景，对学员答题进行专业点评，标注薄弱知识点，推荐复习方向，帮助学员有的放矢地备考。</div>
+                  <div class="agent-usage">已有 2,890 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="教培" data-job="督学岗">
+                <div class="agent-avatar" style="background:linear-gradient(135deg,#b8e8c8,#d0f8e0)">📋</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">课程到期提醒官</span></div>
+                  <div class="agent-tags"><span class="atag at-edu">教培 · 督学岗</span></div>
+                  <div class="agent-desc">在学员课程权益到期前主动发送提醒，结合学习进度生成个性化续费建议，帮助机构提升续课率和学员留存。</div>
+                  <div class="agent-usage">已有 1,560 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="电商" data-job="客服岗">
+                <div class="agent-avatar av-bl">🛒</div>
+                <div class="agent-body">
+                  <div class="agent-name-row">
+                    <span class="agent-name">电商挽单专员</span>
+                    <span class="agent-badge badge-hot">热门</span>
+                  </div>
+                  <div class="agent-tags"><span class="atag at-ecom">电商 · 客服岗</span></div>
+                  <div class="agent-desc">实时监测加购未付款行为，在最佳时机主动触达买家，配合优惠券策略提升付款转化率，减少流失订单。</div>
+                  <div class="agent-usage">已有 4,102 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="电商" data-job="客服岗">
+                <div class="agent-avatar" style="background:linear-gradient(135deg,#a8c8f0,#c0e0f8)">💬</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">售后问题拦截官</span></div>
+                  <div class="agent-tags"><span class="atag at-ecom">电商 · 客服岗</span></div>
+                  <div class="agent-desc">买家发起退换货申请时第一时间介入处理，尝试解决问题，降低退款率，无法解决时智能转接人工客服。</div>
+                  <div class="agent-usage">已有 1,876 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="电商" data-job="客服岗">
+                <div class="agent-avatar" style="background:linear-gradient(135deg,#c0d8f0,#d8ecf8)">🔔</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">老客唤醒专员</span></div>
+                  <div class="agent-tags"><span class="atag at-ecom">电商 · 客服岗</span></div>
+                  <div class="agent-desc">识别超过 30 天未消费的老客户，主动推送个性化商品推荐和专属优惠，唤醒沉默用户提升复购率。</div>
+                  <div class="agent-usage">已有 2,210 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="直播" data-job="导播岗">
+                <div class="agent-avatar av-pu">📺</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">直播间智能导播</span><span class="agent-badge badge-hot">热门</span></div>
+                  <div class="agent-tags"><span class="atag at-live">直播 · 导播岗</span></div>
+                  <div class="agent-desc">实时识别直播间高意向观众，在最佳时机推送商品链接与专属优惠，下播后继续跟进未转化观众，最大化直播 GMV。</div>
+                  <div class="agent-usage">已有 2,340 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="直播" data-job="导播岗">
+                <div class="agent-avatar" style="background:linear-gradient(135deg,#d0b8f0,#e0ccf8)">🎙️</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">下播转化跟进官</span></div>
+                  <div class="agent-tags"><span class="atag at-live">直播 · 导播岗</span></div>
+                  <div class="agent-desc">直播结束后 1 小时内主动向有互动记录的观众发送商品回顾和优惠提醒，延续直播热度提升转化。</div>
+                  <div class="agent-usage">已有 1,120 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="医美" data-job="问诊岗">
+                <div class="agent-avatar av-or">🩺</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">医美问诊顾问</span><span class="agent-badge badge-rec">推荐</span></div>
+                  <div class="agent-tags"><span class="atag at-med">医美 · 问诊岗</span></div>
+                  <div class="agent-desc">专业解答医美项目咨询，从项目介绍、适合人群、术后护理全方位服务来访客户，释放咨询师人力，提升到店转化率。</div>
+                  <div class="agent-usage">已有 980 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="医美" data-job="客服岗">
+                <div class="agent-avatar" style="background:linear-gradient(135deg,#f0c8b8,#f8e0d0)">💄</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">医美课程顾问</span></div>
+                  <div class="agent-tags"><span class="atag at-med">医美 · 客服岗</span></div>
+                  <div class="agent-desc">专注医美教育场景，为学员推荐适合的医美课程，解答课程内容与学习规划问题，提升课程转化与完课率。</div>
+                  <div class="agent-usage">已有 701 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+              <div class="agent-item" data-industry="通用" data-job="客服岗">
+                <div class="agent-avatar av-bl">🏢</div>
+                <div class="agent-body">
+                  <div class="agent-name-row"><span class="agent-name">企业微信客服专员</span></div>
+                  <div class="agent-tags"><span class="atag at-gen">通用 · 客服岗</span></div>
+                  <div class="agent-desc">将企微账号托管给AI，7×24小时自动回复客户咨询，管理社群互动，配合知识库实现精准服务。</div>
+                  <div class="agent-usage">已有 3,650 家店铺在用</div>
+                </div>
+                <div class="agent-action"><button class="btn-hire">招募分身</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 我的分身 -->
+      <div class="tab-panel active" id="panel-emp">
+        <div class="emp-content">
+          <div class="sum-bar">
+            <div class="sum-chip"><b>5</b>在岗分身</div>
+            <div class="divdr"></div>
+            <div class="sum-chip"><b>4,425</b>本周服务次数</div>
+            <div class="divdr"></div>
+            <div class="sum-chip warn"><b>3</b>待处理盲区</div>
+            <div class="divdr"></div>
+            <div class="sum-chip"><b>1</b>待上岗分身</div>
+          </div>
+          <div class="emp-grid">
+            <div class="ecard">
+              <div class="sp sp-g"><div class="sp-dot spd-g"></div>运行中</div>
+              <div class="card-top">
+                <div class="ava av-or">🩺</div>
+                <div class="card-meta">
+                  <div class="card-name">医美问诊官</div>
+                  <div class="card-sub"><span class="rt rt-med">医美</span>问诊岗 · 15 天</div>
+                </div>
+              </div>
+              <div class="deploy-row"><span class="dtag">在线客服</span><span class="dtag">企业微信</span></div>
+              <div class="score-row"><span class="score-lbl">分身称职度</span><span class="score-val sv-g">95 / 100</span></div>
+              <div class="bar-bg"><div class="bar-fill bf-g" style="width:95%"></div></div>
+              <div class="stats">
+                <div class="s-col"><div class="s-n">4,312</div><div class="s-l">本周服务</div></div>
+                <div class="s-col"><div class="s-n">98%</div><div class="s-l">准确率</div></div>
+                <div class="s-col"><div class="s-n">0</div><div class="s-l">知识盲区</div></div>
+              </div>
+              <div class="acts"><div class="btn btn-set">设置</div><div class="btn btn-add">+ 添加任务</div></div>
+            </div>
+            <div class="ecard warn">
+              <div class="sp sp-o"><div class="sp-dot spd-o"></div>发现盲区</div>
+              <div class="card-top">
+                <div class="ava av-gr">📚</div>
+                <div class="card-meta">
+                  <div class="card-name">AI 学习督导员</div>
+                  <div class="card-sub"><span class="rt rt-edu">教培</span>督学岗 · 8 天</div>
+                </div>
+              </div>
+              <div class="deploy-row"><span class="dtag">班级群</span></div>
+              <div class="score-row"><span class="score-lbl">分身称职度</span><span class="score-val sv-o">65 / 100</span></div>
+              <div class="bar-bg"><div class="bar-fill bf-o" style="width:65%"></div></div>
+              <div class="warn-tip"><div class="wd"></div>发现 3 个知识盲区，需要补课</div>
+              <div class="stats">
+                <div class="s-col"><div class="s-n">89</div><div class="s-l">本周服务</div></div>
+                <div class="s-col"><div class="s-n">71%</div><div class="s-l">准确率</div></div>
+                <div class="s-col"><div class="s-n warn">3</div><div class="s-l">知识盲区</div></div>
+              </div>
+              <div class="acts"><div class="btn btn-set">设置</div><div class="btn btn-train">去训练</div></div>
+            </div>
+            <div class="ecard">
+              <div class="sp sp-g"><div class="sp-dot spd-g"></div>运行中</div>
+              <div class="card-top">
+                <div class="ava av-bl">💼</div>
+                <div class="card-meta">
+                  <div class="card-name">企业微信客服专员</div>
+                  <div class="card-sub"><span class="rt rt-gen">通用</span>客服岗 · 22 天</div>
+                </div>
+              </div>
+              <div class="deploy-row"><span class="dtag">企业微信</span></div>
+              <div class="score-row"><span class="score-lbl">分身称职度</span><span class="score-val sv-g">88 / 100</span></div>
+              <div class="bar-bg"><div class="bar-fill bf-g" style="width:88%"></div></div>
+              <div class="stats">
+                <div class="s-col"><div class="s-n">12</div><div class="s-l">本周服务</div></div>
+                <div class="s-col"><div class="s-n">91%</div><div class="s-l">准确率</div></div>
+                <div class="s-col"><div class="s-n">1</div><div class="s-l">知识盲区</div></div>
+              </div>
+              <div class="acts"><div class="btn btn-set">设置</div><div class="btn btn-add">+ 添加任务</div></div>
+            </div>
+            <div class="ecard">
+              <div class="sp sp-g"><div class="sp-dot spd-g"></div>运行中</div>
+              <div class="card-top">
+                <div class="ava av-pu">📺</div>
+                <div class="card-meta">
+                  <div class="card-name">直播间智能导播</div>
+                  <div class="card-sub"><span class="rt rt-live">直播</span>导播岗 · 5 天</div>
+                </div>
+              </div>
+              <div class="deploy-row"><span class="dtag">直播间</span></div>
+              <div class="score-row"><span class="score-lbl">分身称职度</span><span class="score-val sv-g">82 / 100</span></div>
+              <div class="bar-bg"><div class="bar-fill bf-g" style="width:82%"></div></div>
+              <div class="stats">
+                <div class="s-col"><div class="s-n">7</div><div class="s-l">本周服务</div></div>
+                <div class="s-col"><div class="s-n">85%</div><div class="s-l">准确率</div></div>
+                <div class="s-col"><div class="s-n">0</div><div class="s-l">知识盲区</div></div>
+              </div>
+              <div class="acts"><div class="btn btn-set">设置</div><div class="btn btn-add">+ 添加任务</div></div>
+            </div>
+            <div class="ecard inactive">
+              <div class="sp sp-gray"><div class="sp-dot spd-gray"></div>待上岗</div>
+              <div class="card-top">
+                <div class="ava av-gy">🤖</div>
+                <div class="card-meta">
+                  <div class="card-name">电商挽单专员</div>
+                  <div class="card-sub">客服岗 · 未完成配置</div>
+                </div>
+              </div>
+              <div class="deploy-row"><span style="font-size:10px;color:#ccc;">尚未部署任何渠道</span></div>
+              <div class="score-row"><span class="score-lbl">分身称职度</span><span class="score-val sv-gray">-- / 100</span></div>
+              <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#e0e0e0"></div></div>
+              <div class="stats">
+                <div class="s-col"><div class="s-n gray">--</div><div class="s-l">本周服务</div></div>
+                <div class="s-col"><div class="s-n gray">--</div><div class="s-l">准确率</div></div>
+                <div class="s-col"><div class="s-n gray">--</div><div class="s-l">知识盲区</div></div>
+              </div>
+              <div class="acts"><div class="btn btn-cfg">去完成配置</div></div>
+            </div>
+            <div class="ecard ecard-new" onclick="switchTab('market')">
+              <div class="np">+</div>
+              <div class="nt">招募新分身</div>
+              <div class="ns">前往招聘广场</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 知识库 -->
+      <div class="tab-panel" id="panel-kb">
+        <div class="kb-content">
+          <div class="kb-header">
+            <div style="font-size:14px;font-weight:600;color:#111;">知识库管理 <span style="font-size:13px;color:#bbb;font-weight:400;">28 / 100 个</span></div>
+            <button class="btn-add-kb">+ 新建知识库</button>
+          </div>
+          <div class="kb-stats">
+            <div class="kb-stat"><div class="kb-stat-num">28</div><div class="kb-stat-lbl">知识库数量</div></div>
+            <div class="kb-stat"><div class="kb-stat-num">112.14<span style="font-size:13px;font-weight:400;color:#bbb"> 万字</span></div><div class="kb-stat-lbl">已使用容量 / 1,000 万字</div></div>
+            <div class="kb-stat"><div class="kb-stat-num">5</div><div class="kb-stat-lbl">已关联分身</div></div>
+            <div class="kb-stat"><div class="kb-stat-num" style="color:#52C41A;">自动更新</div><div class="kb-stat-lbl">课程内容同步状态</div></div>
+          </div>
+          <div class="kb-grid">
+            <div class="kb-card">
+              <div class="kb-icon">📖</div>
+              <div class="kb-name">课程内容库</div>
+              <div class="kb-desc">包含由AI智能识别的课程音视频内容</div>
+              <div class="kb-meta">
+                <span class="kb-count">已掌握 23 条知识</span>
+                <span class="kb-badge kb-old">旧版</span>
+              </div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-icon">🩺</div>
+              <div class="kb-name">医美问诊知识库</div>
+              <div class="kb-desc">医美项目介绍与常见问答</div>
+              <div class="kb-meta">
+                <span class="kb-count">已掌握 45 条知识</span>
+                <span class="kb-badge kb-new">新版</span>
+              </div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-icon">📚</div>
+              <div class="kb-name">督学话术库</div>
+              <div class="kb-desc">学员督促场景标准话术集合</div>
+              <div class="kb-meta">
+                <span class="kb-count">已掌握 18 条知识</span>
+                <span class="kb-badge kb-new">新版</span>
+              </div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-icon">💬</div>
+              <div class="kb-name">客服应答库</div>
+              <div class="kb-desc">企微客服常见问题标准回答</div>
+              <div class="kb-meta">
+                <span class="kb-count">已掌握 31 条知识</span>
+                <span class="kb-badge kb-new">新版</span>
+              </div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-icon">📺</div>
+              <div class="kb-name">直播话术库</div>
+              <div class="kb-desc">直播间导播专属话术与商品介绍</div>
+              <div class="kb-meta">
+                <span class="kb-count">已掌握 12 条知识</span>
+                <span class="kb-badge kb-new">新版</span>
+              </div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-icon">🏷️</div>
+              <div class="kb-name">营养健康知识库</div>
+              <div class="kb-desc">养生堂专属营养健康内容</div>
+              <div class="kb-meta">
+                <span class="kb-count">已掌握 28 条知识</span>
+                <span class="kb-badge kb-new">新版</span>
+              </div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-icon">📐</div>
+              <div class="kb-name">心理</div>
+              <div class="kb-desc">123123</div>
+              <div class="kb-meta">
+                <span class="kb-count">已掌握 0 条知识</span>
+                <span class="kb-badge kb-new">新版</span>
+              </div>
+            </div>
+            <div class="kb-card kb-add" onclick="">
+              <div class="np">+</div>
+              <div class="nt">新建知识库</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  const ph = name === 'market' ? '搜索岗位 / 技能' : name === 'emp' ? '搜索分身' : '搜索知识库';
+  document.getElementById('search-inp').placeholder = ph;
+}
+
+let currentIndustry = '全部';
+let currentJob = '全部';
+
+function applyFilter() {
+  document.querySelectorAll('#agent-list .agent-item').forEach(item => {
+    const ind = item.dataset.industry;
+    const job = item.dataset.job;
+    const indMatch = currentIndustry === '全部' || ind === currentIndustry;
+    const jobMatch = currentJob === '全部' || job === currentJob;
+    item.style.display = (indMatch && jobMatch) ? 'flex' : 'none';
+  });
+}
+
+function filterIndustry(name, el) {
+  currentIndustry = name;
+  currentJob = '全部';
+  document.querySelectorAll('.market-sidebar .mcat-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.industry-pills .pill').forEach(p => {
+    p.classList.toggle('active', p.textContent.trim() === name);
+  });
+  applyFilter();
+}
+
+function filterJob(name, el) {
+  currentJob = name;
+  currentIndustry = '全部';
+  document.querySelectorAll('.market-sidebar .mcat-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.industry-pills .pill').forEach(p => {
+    p.classList.toggle('active', p.textContent.trim() === '全部');
+  });
+  applyFilter();
+}
+
+function setPill(el) {
+  currentIndustry = el.textContent.trim();
+  currentJob = '全部';
+  document.querySelectorAll('.industry-pills .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.market-sidebar .mcat-item').forEach(i => {
+    const txt = i.textContent.trim();
+    i.classList.toggle('active', txt === currentIndustry || (currentIndustry === '全部' && txt === '全部'));
+  });
+  applyFilter();
+}
+
+function setSort(el) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function setSort(el) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+
+</body>
+</html>
